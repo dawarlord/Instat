@@ -27,22 +27,23 @@ Partial Class dlgDistanceText
         '
         'ucrBase
         '
-        Me.ucrBase.Location = New System.Drawing.Point(13, 196)
+        Me.ucrBase.Location = New System.Drawing.Point(0, 0)
         Me.ucrBase.Name = "ucrBase"
-        Me.ucrBase.Size = New System.Drawing.Size(410, 53)
+        Me.ucrBase.Size = New System.Drawing.Size(410, 52)
         Me.ucrBase.TabIndex = 0
         '
         'dlgDistanceText
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(426, 261)
+        Me.ClientSize = New System.Drawing.Size(284, 262)
         Me.Controls.Add(Me.ucrBase)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "dlgDistanceText"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Tag = "Distance"
-        Me.Text = "Distance"
         Me.ResumeLayout(False)
 
     End Sub

@@ -80,7 +80,6 @@ instat_object$set("public", "import_data", function(data_tables = list(), data_t
     # loop through the data_tables list and create a data object for each
     # data.frame given
     new_data_objects = list()
-    
     for ( i in (1:length(data_tables)) ) {
       new_data = data_object$new(data=data_tables[[i]], data_name = names(data_tables)[[i]],
                                  variables_metadata = data_tables_variables_metadata[[i]],
@@ -167,6 +166,14 @@ instat_object$set("public", "import_RDS", function(data_RDS, keep_existing = TRU
 }
 )
 
+instat_object$set("public", "import_from_ODK", function(username, password, form_name, platform) {
+  out <- import_from_ODK(username, password, form_name, platform)
+  data_list <- list(out)
+  names(data_list) <- form_name
+  self$import_data(data_tables = data_list)
+}
+)
+
 # Now appending/merging not setting so maybe should be renamed
 instat_object$set("public", "set_meta", function(new_meta) {
   if(!is.list(new_meta)) stop("new_meta must be of type: list")
@@ -216,22 +223,22 @@ instat_object$set("public", "get_data_objects", function(data_name, as_list = FA
 }
 )
 
-instat_object$set("public", "get_data_frame", function(data_name, convert_to_character = FALSE, stack_data = FALSE, include_hidden_columns = TRUE, use_current_filter = TRUE, filter_name = "", ...) {
+instat_object$set("public", "get_data_frame", function(data_name, convert_to_character = FALSE, stack_data = FALSE, include_hidden_columns = TRUE, use_current_filter = TRUE, filter_name = "", remove_attr = FALSE, ...) {
   if(!stack_data) {
     if(missing(data_name)) data_name <- self$get_data_names()
     if(length(data_name) > 1) {
       retlist <- list()
       for (curr_name in data_name) {
-        retlist[[curr_name]] = self$get_data_objects(curr_name)$get_data_frame(convert_to_character = convert_to_character, include_hidden_columns = include_hidden_columns, use_current_filter = use_current_filter, filter_name = filter_name)
+        retlist[[curr_name]] = self$get_data_objects(curr_name)$get_data_frame(convert_to_character = convert_to_character, include_hidden_columns = include_hidden_columns, use_current_filter = use_current_filter, filter_name = filter_name, remove_attr = remove_attr)
       }
       return(retlist)
     }
-    else return(self$get_data_objects(data_name)$get_data_frame(convert_to_character = convert_to_character, include_hidden_columns = include_hidden_columns, use_current_filter = use_current_filter, filter_name = filter_name))
+    else return(self$get_data_objects(data_name)$get_data_frame(convert_to_character = convert_to_character, include_hidden_columns = include_hidden_columns, use_current_filter = use_current_filter, filter_name = filter_name, remove_attr = remove_attr))
   }
   else {
     if(missing(data_name)) stop("data to be stacked is missing")
     if(!data_name %in% names(private$.data_objects)) stop(paste(data_name, "not found."))
-    return(self$get_data_frame(include_hidden_columns = include_hidden_columns, use_current_filter = use_current_filter, filter_name = filter_name, stack_data = TRUE, ...))
+    return(self$get_data_objects(data_name)$get_data_frame(include_hidden_columns = include_hidden_columns, use_current_filter = use_current_filter, filter_name = filter_name, stack_data = TRUE, ...))
   }
 }
 )
@@ -270,7 +277,7 @@ instat_object$set("public", "get_metadata", function(name) {
 } 
 )
 
-instat_object$set("public", "get_data_names", function(as_list = FALSE) { 
+instat_object$set("public", "get_data_names", function(as_list = FALSE, include, exclude, excluded_items) { 
   if(as_list) return(list(data_names = names(private$.data_objects)))
   else return(names(private$.data_objects))
 } 
@@ -312,6 +319,16 @@ instat_object$set("public", "get_metadata_changed", function(data_name) {
   else {
     return(self$get_data_objects(data_name)$metadata_changed)
   }
+} 
+)
+
+instat_object$set("public", "get_calculations", function(data_name) {
+  return(self$get_data_objects(data_name)$get_calculations())
+} 
+)
+
+instat_object$set("public", "get_calculation_names", function(data_name) {
+  return(self$get_data_objects(data_name)$get_calculation_names())
 } 
 )
 
@@ -617,8 +634,8 @@ instat_object$set("public", "frequency_tables", function(data_name, x_col_names,
 } 
 )
 
-instat_object$set("public", "anova_tables", function(data_name, x_col_names, y_col_name, signif.stars = FALSE, sign_level = FALSE) {
-  self$get_data_objects(data_name)$anova_tables(x_col_names = x_col_names, y_col_name = y_col_name, signif.stars = signif.stars, sign_level = sign_level)
+instat_object$set("public", "anova_tables", function(data_name, x_col_names, y_col_name, signif.stars = FALSE, sign_level = FALSE, means = FALSE) {
+  self$get_data_objects(data_name)$anova_tables(x_col_names = x_col_names, y_col_name = y_col_name, signif.stars = signif.stars, sign_level = sign_level, means = means)
 } 
 )
 
@@ -670,7 +687,7 @@ instat_object$set("public", "reorder_columns_in_data", function(data_name, col_o
 )
 
 #TODO Think how to use row_data argument
-instat_object$set("public", "insert_row_in_data", function(data_name, start_row, row_data = c(), number_rows, before = FALSE) {
+instat_object$set("public", "insert_row_in_data", function(data_name, start_row, row_data = c(), number_rows = 1, before = FALSE) {
   self$get_data_objects(data_name)$insert_row_in_data(start_row = start_row, row_data = row_data, number_rows = number_rows, before = before)
 }
 )
@@ -689,6 +706,17 @@ instat_object$set("public", "delete_dataframe", function(data_name) {
   # TODO need a set or append
   private$.data_objects[[data_name]] <- NULL
   data_objects_changed <- TRUE
+  ind <- c()
+  for(i in seq_along(private$.links)) {
+    if(private$.links[[i]]$from_data_frame == data_name || private$.links[[i]]$to_data_frame == data_name) {
+      ind <- c(ind, i)
+    }
+  }
+  #TODO Should this be delete or disable?
+  if(length(ind) > 0) {
+    private$.links[ind] <- NULL
+    message(length(ind), " links removed")
+  }
 } 
 )
 
@@ -715,7 +743,7 @@ instat_object$set("public", "rename_dataframe", function(data_name, new_value = 
 } 
 )
 
-instat_object$set("public", "convert_column_to_type", function(data_name, col_names = c(), to_type ="factor", factor_numeric = "by_levels") {
+instat_object$set("public", "convert_column_to_type", function(data_name, col_names = c(), to_type, factor_numeric = "by_levels") {
   self$get_data_objects(data_name)$convert_column_to_type(col_names = col_names, to_type = to_type, factor_numeric = factor_numeric)
 } 
 )
@@ -888,7 +916,24 @@ instat_object$set("public","data_frame_exists", function(data_name) {
 
 instat_object$set("public","add_key", function(data_name, col_names) {
   self$get_data_objects(data_name)$add_key(col_names)
+  names(col_names) <- col_names
+  self$add_link(data_name, data_name, col_names, keyed_link_label)
   invisible(sapply(self$get_data_objects(), function(x) if(!x$is_metadata(is_linkable)) x$append_to_metadata(is_linkable, FALSE)))
+}
+)
+
+instat_object$set("public","is_key", function(data_name, col_names) {
+  self$get_data_objects(data_name)$is_key(col_names)
+}
+)
+
+instat_object$set("public","has_key", function(data_name) {
+  self$get_data_objects(data_name)$has_key()
+}
+)
+
+instat_object$set("public","get_keys", function(data_name) {
+  self$get_data_objects(data_name)$get_keys()
 }
 )
 
@@ -917,12 +962,95 @@ instat_object$set("public","has_colours", function(data_name, columns) {
 }
 )
 
+instat_object$set("public", "remove_column_colours", function(data_name) {
+  self$get_data_objects(data_name)$remove_column_colours()
+}
+)
+
 instat_object$set("public","set_column_colours_by_metadata", function(data_name, columns, property) {
   self$get_data_objects(data_name)$set_column_colours_by_metadata(columns, property)
 }
 )
 
-instat_object$set("public","graph_one_variable", function(data_name, columns, numeric = "geom_boxplot", factor = "geom_bar", character = "geom_bar", facets = TRUE) {
-  self$get_data_objects(data_name)$graph_one_variable(columns = columns, numeric = numeric, factor = factor, character = character, facets = facets)
+instat_object$set("public","graph_one_variable", function(data_name, columns, numeric = "geom_boxplot", categorical = "geom_bar", character = "geom_bar", output = "facets", free_scale_axis = FALSE, ncol = NULL, ...) {
+  self$get_data_objects(data_name)$graph_one_variable(columns = columns, numeric = numeric, categorical = categorical, output = output, free_scale_axis = free_scale_axis, ncol = ncol, ... = ...)
+}
+)
+
+instat_object$set("public","make_date_yearmonthday", function(data_name, year, month, day, year_format = "%Y", month_format = "%m", day_format = "%d") {
+  self$get_data_objects(data_name)$make_date_yearmonthday(year = year, month = month, day = day, year_format = year_format, month_format = month_format, day_format = day_format)
+}
+)
+
+instat_object$set("public","make_date_yeardoy", function(data_name, year, doy, year_format = "%Y", doy_format = "%j", doy_typical_length = "366") {
+  self$get_data_objects(data_name)$make_date_yeardoy(year = year, doy = doy, year_format = year_format, doy_format = doy_format, doy_typical_length = doy_typical_length)
+}
+)
+
+instat_object$set("public","set_contrasts_of_factor", function(data_name, col_name, new_contrasts, defined_contr_matrix) {
+  self$get_data_objects(data_name)$set_contrasts_of_factor(col_name = col_name, new_contrasts = new_contrasts, defined_contr_matrix = defined_contr_matrix)
+}
+)
+
+instat_object$set("public","create_factor_data_frame", function(data_name, factor, factor_data_frame_name, include_contrasts = TRUE, replace = FALSE) {
+  curr_data_obj <- self$get_data_objects(data_name)
+  if(!factor %in% names(curr_data_obj$get_data_frame())) stop(factor, " not found in the data")
+  if(!is.factor(curr_data_obj$get_columns_from_data(factor))) stop(factor, " is not a factor column.")
+  create <- TRUE
+  if(self$link_exists_from(data_name, factor)) {
+    message("Factor data frame already exists.")
+    if(replace) {
+      message("Current factor data frame will be replaced.")
+      factor_named <- factor
+      names(factor_named) <- factor
+      curr_factor_df_name <- self$get_linked_to_data_name(data_name, factor_named)
+      self$delete_dataframe(curr_factor_df_name)
+    }
+    else {
+      warning("replace = FALSE so no action will be taken.")
+      create <- FALSE
+    }
+  }
+  if(create) {
+    data_frame_list <- list()
+    if(missing(factor_data_frame_name)) factor_data_frame_name <- paste0(data_name, "_", factor)
+    factor_data_frame_name <- make.names(factor_data_frame_name)
+    factor_data_frame_name <- next_default_item(factor_data_frame_name, self$get_data_names(), include_index = FALSE)
+    
+    factor_column <- curr_data_obj$get_columns_from_data(factor)
+    factor_data_frame <- data.frame(levels(factor_column))
+    names(factor_data_frame) <- factor
+    if(include_contrasts) {
+      factor_data_frame <- cbind(factor_data_frame, contrasts(factor_column))
+    }
+    row.names(factor_data_frame) <- 1:nrow(factor_data_frame)
+    names(factor_data_frame)[2:ncol(factor_data_frame)] <- paste0("C", 1:(ncol(factor_data_frame)-1))
+    data_frame_list[[factor_data_frame_name]] <- factor_data_frame
+    self$import_data(data_frame_list)
+    factor_data_obj <- self$get_data_objects(factor_data_frame_name)
+    #TODO We shoud now never call add_key directly from the data object method because it needs to add a link as well at this point to itself
+    factor_data_obj$add_key(factor)
+    names(factor) <- factor
+    self$add_link(from_data_frame = data_name, to_data_frame = factor_data_frame_name, link_pairs = factor, type = keyed_link_label)
+  }
+}
+)
+
+instat_object$set("public","split_date", function(data_name, col_name = "", year = FALSE, day = FALSE, week = FALSE,  month_val = FALSE, month_abbr = FALSE, month_name = FALSE, weekday_val = FALSE, weekday_abbr = FALSE, weekday_name = FALSE, day_in_month = FALSE, day_in_year = FALSE,  leap_year = FALSE, day_in_year_366 = FALSE) {
+  self$get_data_objects(data_name)$split_date(col_name = col_name , week = week, month_val = month_val,  month_abbr = month_abbr, month_name = month_name, weekday_val = weekday_val, weekday_abbr = weekday_abbr,  weekday_name =  weekday_name, day = day, year = year, day_in_month = day_in_month, day_in_year = day_in_year,  leap_year =  leap_year, day_in_year_366 = day_in_year_366)
+}
+)
+
+instat_object$set("public", "import_SST", function(dataset, data_from = 5, data_names = c()) {
+  data_list <- convert_SST(dataset, data_from)
+  if(length(data_list) != length(data_names))stop("data_names vector should be of length 2")
+  names(data_list) = data_names
+  self$import_data(data_tables = data_list)
+  self$add_key(data_names[2], c("lat", "lon"))
+  self$add_link(from_data_frame = data_names[1], to_data_frame = data_names[2], link_pairs = c(lat = "lat", lon = "lon"), type = keyed_link_label)
+}
+)
+instat_object$set("public","make_inventory_plot", function(data_name,col_name = "", year , doy, add_to_data = FALSE, coord_flip = FALSE, threshold, facets) {
+  self$get_data_objects(data_name)$make_inventory_plot(col_name = col_name , year = year, doy =doy,add_to_data = add_to_data, coord_flip = coord_flip, threshold = threshold, facets = facets)
 }
 )

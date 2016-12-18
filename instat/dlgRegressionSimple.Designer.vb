@@ -35,13 +35,26 @@ Partial Class dlgRegressionSimple
         Me.chkFunction = New System.Windows.Forms.CheckBox()
         Me.chkConvertToVariate = New System.Windows.Forms.CheckBox()
         Me.lblModelPreview = New System.Windows.Forms.Label()
+        Me.chkPaired = New System.Windows.Forms.CheckBox()
+        Me.rdoGeneral = New System.Windows.Forms.RadioButton()
+        Me.rdoSpecific = New System.Windows.Forms.RadioButton()
+        Me.lblNumeric = New System.Windows.Forms.Label()
+        Me.lblFactor = New System.Windows.Forms.Label()
+        Me.nudCI = New System.Windows.Forms.NumericUpDown()
+        Me.nudHypothesis = New System.Windows.Forms.NumericUpDown()
+        Me.lblCI = New System.Windows.Forms.Label()
+        Me.lblHyp1 = New System.Windows.Forms.Label()
+        Me.grpParameters = New System.Windows.Forms.GroupBox()
+        Me.ucrModelPreview = New instat.ucrInputTextBox()
+        Me.ucrExplanatory = New instat.ucrReceiverSingle()
+        Me.ucrResponse = New instat.ucrReceiverSingle()
         Me.ucrModelName = New instat.ucrInputComboBox()
         Me.ucrSelectorSimpleReg = New instat.ucrSelectorByDataFrameAddRemove()
         Me.ucrFamily = New instat.ucrDistributions()
         Me.ucrBase = New instat.ucrButtons()
-        Me.ucrResponse = New instat.ucrReceiverSingle()
-        Me.ucrExplanatory = New instat.ucrReceiverSingle()
-        Me.ucrModelPreview = New instat.ucrInputTextBox()
+        CType(Me.nudCI, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.nudHypothesis, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.grpParameters.SuspendLayout()
         Me.SuspendLayout()
         '
         'lblResidualMsg
@@ -117,6 +130,85 @@ Partial Class dlgRegressionSimple
         resources.ApplyResources(Me.lblModelPreview, "lblModelPreview")
         Me.lblModelPreview.Name = "lblModelPreview"
         '
+        'chkPaired
+        '
+        resources.ApplyResources(Me.chkPaired, "chkPaired")
+        Me.chkPaired.Name = "chkPaired"
+        Me.chkPaired.UseVisualStyleBackColor = True
+        '
+        'rdoGeneral
+        '
+        resources.ApplyResources(Me.rdoGeneral, "rdoGeneral")
+        Me.rdoGeneral.Name = "rdoGeneral"
+        Me.rdoGeneral.TabStop = True
+        Me.rdoGeneral.UseVisualStyleBackColor = True
+        '
+        'rdoSpecific
+        '
+        resources.ApplyResources(Me.rdoSpecific, "rdoSpecific")
+        Me.rdoSpecific.Name = "rdoSpecific"
+        Me.rdoSpecific.TabStop = True
+        Me.rdoSpecific.UseVisualStyleBackColor = True
+        '
+        'lblNumeric
+        '
+        resources.ApplyResources(Me.lblNumeric, "lblNumeric")
+        Me.lblNumeric.Name = "lblNumeric"
+        '
+        'lblFactor
+        '
+        resources.ApplyResources(Me.lblFactor, "lblFactor")
+        Me.lblFactor.Name = "lblFactor"
+        '
+        'nudCI
+        '
+        resources.ApplyResources(Me.nudCI, "nudCI")
+        Me.nudCI.Name = "nudCI"
+        '
+        'nudHypothesis
+        '
+        resources.ApplyResources(Me.nudHypothesis, "nudHypothesis")
+        Me.nudHypothesis.Name = "nudHypothesis"
+        '
+        'lblCI
+        '
+        resources.ApplyResources(Me.lblCI, "lblCI")
+        Me.lblCI.Name = "lblCI"
+        '
+        'lblHyp1
+        '
+        resources.ApplyResources(Me.lblHyp1, "lblHyp1")
+        Me.lblHyp1.Name = "lblHyp1"
+        '
+        'grpParameters
+        '
+        Me.grpParameters.Controls.Add(Me.lblCI)
+        Me.grpParameters.Controls.Add(Me.nudCI)
+        Me.grpParameters.Controls.Add(Me.nudHypothesis)
+        Me.grpParameters.Controls.Add(Me.chkPaired)
+        Me.grpParameters.Controls.Add(Me.lblHyp1)
+        resources.ApplyResources(Me.grpParameters, "grpParameters")
+        Me.grpParameters.Name = "grpParameters"
+        Me.grpParameters.TabStop = False
+        '
+        'ucrModelPreview
+        '
+        Me.ucrModelPreview.IsReadOnly = False
+        resources.ApplyResources(Me.ucrModelPreview, "ucrModelPreview")
+        Me.ucrModelPreview.Name = "ucrModelPreview"
+        '
+        'ucrExplanatory
+        '
+        resources.ApplyResources(Me.ucrExplanatory, "ucrExplanatory")
+        Me.ucrExplanatory.Name = "ucrExplanatory"
+        Me.ucrExplanatory.Selector = Nothing
+        '
+        'ucrResponse
+        '
+        resources.ApplyResources(Me.ucrResponse, "ucrResponse")
+        Me.ucrResponse.Name = "ucrResponse"
+        Me.ucrResponse.Selector = Nothing
+        '
         'ucrModelName
         '
         Me.ucrModelName.IsReadOnly = False
@@ -126,6 +218,7 @@ Partial Class dlgRegressionSimple
         'ucrSelectorSimpleReg
         '
         Me.ucrSelectorSimpleReg.bShowHiddenColumns = False
+        Me.ucrSelectorSimpleReg.bUseCurrentFilter = True
         resources.ApplyResources(Me.ucrSelectorSimpleReg, "ucrSelectorSimpleReg")
         Me.ucrSelectorSimpleReg.Name = "ucrSelectorSimpleReg"
         '
@@ -139,28 +232,15 @@ Partial Class dlgRegressionSimple
         resources.ApplyResources(Me.ucrBase, "ucrBase")
         Me.ucrBase.Name = "ucrBase"
         '
-        'ucrResponse
-        '
-        resources.ApplyResources(Me.ucrResponse, "ucrResponse")
-        Me.ucrResponse.Name = "ucrResponse"
-        Me.ucrResponse.Selector = Nothing
-        '
-        'ucrExplanatory
-        '
-        resources.ApplyResources(Me.ucrExplanatory, "ucrExplanatory")
-        Me.ucrExplanatory.Name = "ucrExplanatory"
-        Me.ucrExplanatory.Selector = Nothing
-        '
-        'ucrModelPreview
-        '
-        Me.ucrModelPreview.IsReadOnly = False
-        resources.ApplyResources(Me.ucrModelPreview, "ucrModelPreview")
-        Me.ucrModelPreview.Name = "ucrModelPreview"
-        '
         'dlgRegressionSimple
         '
         resources.ApplyResources(Me, "$this")
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.Controls.Add(Me.grpParameters)
+        Me.Controls.Add(Me.lblFactor)
+        Me.Controls.Add(Me.lblNumeric)
+        Me.Controls.Add(Me.rdoSpecific)
+        Me.Controls.Add(Me.rdoGeneral)
         Me.Controls.Add(Me.ucrModelPreview)
         Me.Controls.Add(Me.ucrExplanatory)
         Me.Controls.Add(Me.ucrResponse)
@@ -178,10 +258,16 @@ Partial Class dlgRegressionSimple
         Me.Controls.Add(Me.ucrBase)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
         Me.HelpButton = True
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "dlgRegressionSimple"
         Me.ShowIcon = False
         Me.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide
         Me.Tag = "Simple_Regression"
+        CType(Me.nudCI, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.nudHypothesis, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.grpParameters.ResumeLayout(False)
+        Me.grpParameters.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -206,4 +292,14 @@ Partial Class dlgRegressionSimple
     Friend WithEvents ucrResponse As ucrReceiverSingle
     Friend WithEvents ucrExplanatory As ucrReceiverSingle
     Friend WithEvents ucrModelPreview As ucrInputTextBox
+    Friend WithEvents chkPaired As CheckBox
+    Friend WithEvents rdoGeneral As RadioButton
+    Friend WithEvents rdoSpecific As RadioButton
+    Friend WithEvents lblNumeric As Label
+    Friend WithEvents lblFactor As Label
+    Friend WithEvents nudCI As NumericUpDown
+    Friend WithEvents nudHypothesis As NumericUpDown
+    Friend WithEvents lblCI As Label
+    Friend WithEvents lblHyp1 As Label
+    Friend WithEvents grpParameters As GroupBox
 End Class

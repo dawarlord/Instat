@@ -107,6 +107,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
@@ -119,6 +120,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\unvell.ReoGrid.dll.1.2.3.0\lib\20\unvell.ReoGrid.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="unvell.ReoScript, Version=1.5.0.0, Culture=neutral, PublicKeyToken=85339a558a3a0c58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\unvell.ReoGrid.dll.1.2.3.0\lib\20\unvell.ReoScript.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -135,10 +140,48 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsBlockReader.vb" />
+    <Compile Include="clsRCodeStructure.vb" />
+    <Compile Include="dlgCalculationsSummary.Designer.vb">
+      <DependentUpon>dlgCalculationsSummary.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgCalculationsSummary.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="dlgAppend.Designer.vb">
       <DependentUpon>dlgAppend.vb</DependentUpon>
     </Compile>
     <Compile Include="dlgAppend.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgClimdex.Designer.vb">
+      <DependentUpon>dlgClimdex.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgClimdex.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgCompareModels.Designer.vb">
+      <DependentUpon>dlgCompareModels.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgCompareModels.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgCountinFactor.Designer.vb">
+      <DependentUpon>dlgCountinFactor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgCountinFactor.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgDefineClimaticData.Designer.vb">
+      <DependentUpon>DlgDefineClimaticData.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DlgDefineClimaticData.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgDescribeTwoVarGraph.Designer.vb">
+      <DependentUpon>dlgDescribeTwoVarGraph.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgDescribeTwoVarGraph.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="dlgDescribeTwoVariable.Designer.vb">
@@ -147,10 +190,119 @@
     <Compile Include="dlgDescribeTwoVariable.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="dlgEnter.Designer.vb">
+      <DependentUpon>dlgEnter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgEnter.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgExportToCPT.Designer.vb">
+      <DependentUpon>dlgExportToCPT.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgExportToCPT.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgExportToOpenRefine.Designer.vb">
+      <DependentUpon>dlgExportToOpenRefine.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgExportToOpenRefine.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgFitModel.Designer.vb">
+      <DependentUpon>dlgFitModel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgFitModel.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgImportFromODK.Designer.vb">
+      <DependentUpon>dlgImportFromODK.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgImportFromODK.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgImportOpenRefine.Designer.vb">
+      <DependentUpon>dlgImportOpenRefine.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgImportOpenRefine.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgMakeDate.Designer.vb">
+      <DependentUpon>dlgMakeDate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgMakeDate.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgOneVarCompareModels.Designer.vb">
+      <DependentUpon>dlgOneVarCompareModels.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgOneVarCompareModels.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgOneVarFitModel2.Designer.vb">
+      <DependentUpon>dlgOneVarFitModel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgOneVarFitModel.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="dlgOneVariableGraph.Designer.vb">
       <DependentUpon>dlgOneVariableGraph.vb</DependentUpon>
     </Compile>
     <Compile Include="dlgOneVariableGraph.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgOneVarUseModel.Designer.vb">
+      <DependentUpon>dlgOneVarUseModel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgOneVarUseModel.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgOpenSST.Designer.vb">
+      <DependentUpon>dlgOpenSST.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgOpenSST.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgRugPlot.Designer.vb">
+      <DependentUpon>dlgRugPlot.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgRugPlot.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgShowModel.Designer.vb">
+      <DependentUpon>dlgShowModel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgShowModel.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgTwoVariabletabulate.Designer.vb">
+      <DependentUpon>dlgTwoVariabletabulate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgTwoVariabletabulate.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="dlgTwoVariableUseModel.Designer.vb">
+      <DependentUpon>dlgTwoVariableUseModel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="dlgTwoVariableUseModel.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgUseDate.Designer.vb">
+      <DependentUpon>DlgUseDate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DlgUseDate.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="mdlCoreControl.vb" />
+    <Compile Include="sdgAddNewDistribution.Designer.vb">
+      <DependentUpon>sdgAddNewDistribution.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgAddNewDistribution.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sdgClimdexIndices.Designer.vb">
+      <DependentUpon>sdgClimdexIndices.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgClimdexIndices.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="sdgDescribeDisplay.Designer.vb">
@@ -159,10 +311,64 @@
     <Compile Include="sdgDescribeDisplay.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="sdgDescribeTwoVarGraph.Designer.vb">
+      <DependentUpon>sdgDescribeTwoVarGraph.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgDescribeTwoVarGraph.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sdgFactorDataFrame.Designer.vb">
+      <DependentUpon>sdgFactorDataFrame.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgFactorDataFrame.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sdgMerge.Designer.vb">
+      <DependentUpon>sdgMerge.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgMerge.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sdgOneVarCompareModels.Designer.vb">
+      <DependentUpon>sdgOneVarCompareModels.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgOneVarCompareModels.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sdgOneVarFitModDisplay.Designer.vb">
+      <DependentUpon>sdgOneVarFitModDisplay.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgOneVarFitModDisplay.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sdgOneVarFitModel.Designer.vb">
+      <DependentUpon>sdgOneVarFitModel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgOneVarFitModel.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="sdgOneVarGraph.Designer.vb">
       <DependentUpon>sdgOneVarGraph.vb</DependentUpon>
     </Compile>
     <Compile Include="sdgOneVarGraph.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sdgOneVarUseModBootstrap.Designer.vb">
+      <DependentUpon>sdgOneVarUseModBootstrap.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgOneVarUseModBootstrap.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sdgOneVarUseModFit.Designer.vb">
+      <DependentUpon>sdgOneVarUseModFit.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgOneVarUseModFit.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sdgCalculationsSummmary.Designer.vb">
+      <DependentUpon>sdgCalculationsSummmary.vb</DependentUpon>
+    </Compile>
+    <Compile Include="sdgCalculationsSummmary.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ucrAxes.Designer.vb">
@@ -711,12 +917,6 @@
     <Compile Include="sdgSummaries.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="sdgFrequencyPolygonOptions.Designer.vb">
-      <DependentUpon>sdgFrequencyPolygonOptions.vb</DependentUpon>
-    </Compile>
-    <Compile Include="sdgFrequencyPolygonOptions.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="sdgLayerOptions.Designer.vb">
       <DependentUpon>sdgLayerOptions.vb</DependentUpon>
     </Compile>
@@ -741,12 +941,6 @@
     <Compile Include="sdgPrincipalComponentAnalysis.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="sdgThemeOptions.Designer.vb">
-      <DependentUpon>sdgThemeOptions.vb</DependentUpon>
-    </Compile>
-    <Compile Include="sdgThemeOptions.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="sdgVariableTransformations.Designer.vb">
       <DependentUpon>sdgVariableTransformations.vb</DependentUpon>
     </Compile>
@@ -759,10 +953,34 @@
     <Compile Include="ucrAdditionalLayers.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ucrCalculator.Designer.vb">
+      <DependentUpon>ucrCalculator.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ucrCalculator.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucrCheck.Designer.vb">
+      <DependentUpon>ucrCheck.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ucrCheck.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ucrColors.Designer.vb">
       <DependentUpon>ucrColors.vb</DependentUpon>
     </Compile>
     <Compile Include="ucrColors.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucrCore.Designer.vb">
+      <DependentUpon>ucrCore.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ucrCore.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucrDialogDisabled.Designer.vb">
+      <DependentUpon>ucrDialogDisabled.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ucrDialogDisabled.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ucrFilter.Designer.vb">
@@ -1655,6 +1873,18 @@
     <Compile Include="ucrNewColumnName.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ucrNud.Designer.vb">
+      <DependentUpon>ucrNud.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ucrNud.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucrRadio.Designer.vb">
+      <DependentUpon>ucrRadio.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ucrRadio.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ucrReceiver.Designer.vb">
       <DependentUpon>ucrReceiver.vb</DependentUpon>
     </Compile>
@@ -1741,6 +1971,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="dlgCalculationsSummary.fr-FR.resx">
+      <DependentUpon>dlgCalculationsSummary.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgCalculationsSummary.resx">
+      <DependentUpon>dlgCalculationsSummary.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgCalculationsSummary.sw-KE.resx">
+      <DependentUpon>dlgCalculationsSummary.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgAddStartRain.fr-FR.resx">
       <DependentUpon>dlgAddStartRain.vb</DependentUpon>
     </EmbeddedResource>
@@ -1882,6 +2121,9 @@
     <EmbeddedResource Include="dlgCliBoxplot.sw-KE.resx">
       <DependentUpon>dlgCliBoxplot.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgClimdex.resx">
+      <DependentUpon>dlgClimdex.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgCliPlot.fr-FR.resx">
       <DependentUpon>dlgCliPlot.vb</DependentUpon>
     </EmbeddedResource>
@@ -1927,6 +2169,15 @@
     <EmbeddedResource Include="dlgCombineText.sw-KE.resx">
       <DependentUpon>dlgCombineText.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgCompareModels.fr-FR.resx">
+      <DependentUpon>dlgCompareModels.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgCompareModels.resx">
+      <DependentUpon>dlgCompareModels.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgCompareModels.sw-KE.resx">
+      <DependentUpon>dlgCompareModels.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgContrasts.fr-FR.resx">
       <DependentUpon>dlgContrasts.vb</DependentUpon>
     </EmbeddedResource>
@@ -1945,6 +2196,9 @@
     <EmbeddedResource Include="dlgCopySheet.sw-KE.resx">
       <DependentUpon>dlgCopySheet.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgCountinFactor.resx">
+      <DependentUpon>dlgCountinFactor.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgCumulativeDistribution.fr-FR.resx">
       <DependentUpon>dlgCumulativeDistribution.vb</DependentUpon>
     </EmbeddedResource>
@@ -1953,6 +2207,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="dlgCumulativeDistribution.sw-KE.resx">
       <DependentUpon>dlgCumulativeDistribution.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DlgDefineClimaticData.resx">
+      <DependentUpon>DlgDefineClimaticData.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgDeleteDescriptive.fr-FR.resx">
       <DependentUpon>dlgDeleteDescriptive.vb</DependentUpon>
@@ -1999,6 +2256,15 @@
     <EmbeddedResource Include="dlgDeleteSheet.sw-KE.resx">
       <DependentUpon>dlgDeleteSheet.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgDescribeTwoVarGraph.fr-FR.resx">
+      <DependentUpon>dlgDescribeTwoVarGraph.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgDescribeTwoVarGraph.resx">
+      <DependentUpon>dlgDescribeTwoVarGraph.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgDescribeTwoVarGraph.sw-KE.resx">
+      <DependentUpon>dlgDescribeTwoVarGraph.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgDescribeTwoVariable.fr-FR.resx">
       <DependentUpon>dlgDescribeTwoVariable.vb</DependentUpon>
     </EmbeddedResource>
@@ -2017,6 +2283,9 @@
     <EmbeddedResource Include="dlgDistanceText.sw-KE.resx">
       <DependentUpon>dlgDistanceText.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgEnter.resx">
+      <DependentUpon>dlgEnter.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgExportDataset.fr-FR.resx">
       <DependentUpon>dlgExportDataset.vb</DependentUpon>
     </EmbeddedResource>
@@ -2025,6 +2294,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="dlgExportDataset.sw-KE.resx">
       <DependentUpon>dlgExportDataset.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgExportToCPT.resx">
+      <DependentUpon>dlgExportToCPT.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgExportToOpenRefine.resx">
+      <DependentUpon>dlgExportToOpenRefine.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgFitModel.fr-FR.resx">
+      <DependentUpon>dlgFitModel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgFitModel.resx">
+      <DependentUpon>dlgFitModel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgFitModel.sw-KE.resx">
+      <DependentUpon>dlgFitModel.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgFourVariableModelling.fr-FR.resx">
       <DependentUpon>dlgFourVariableModelling.vb</DependentUpon>
@@ -2110,6 +2394,12 @@
     <EmbeddedResource Include="dlgHideShowColumns.sw-KE.resx">
       <DependentUpon>dlgHideShowColumns.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgImportFromODK.resx">
+      <DependentUpon>dlgImportFromODK.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgImportOpenRefine.resx">
+      <DependentUpon>dlgImportOpenRefine.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgInsertColumn.fr-FR.resx">
       <DependentUpon>dlgInsertColumn.vb</DependentUpon>
     </EmbeddedResource>
@@ -2136,6 +2426,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="dlgFactorDataFrame.sw-KE.resx">
       <DependentUpon>dlgFactorDataFrame.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgMakeDate.resx">
+      <DependentUpon>dlgMakeDate.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgMatchText.fr-FR.resx">
       <DependentUpon>dlgMatchText.vb</DependentUpon>
@@ -2176,6 +2469,12 @@
     <EmbeddedResource Include="dlgOneSampleSummaryData.sw-KE.resx">
       <DependentUpon>dlgOneSampleSummaryData.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgOneVarCompareModels.resx">
+      <DependentUpon>dlgOneVarCompareModels.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgOneVarFitModel.resx">
+      <DependentUpon>dlgOneVarFitModel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgOneVariableGraph.fr-FR.resx">
       <DependentUpon>dlgOneVariableGraph.vb</DependentUpon>
     </EmbeddedResource>
@@ -2185,6 +2484,9 @@
     <EmbeddedResource Include="dlgOneVariableGraph.sw-KE.resx">
       <DependentUpon>dlgOneVariableGraph.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgOneVarUseModel.resx">
+      <DependentUpon>dlgOneVarUseModel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgOneWayANOVA.fr-FR.resx">
       <DependentUpon>dlgOneWayANOVA.vb</DependentUpon>
     </EmbeddedResource>
@@ -2193,6 +2495,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="dlgOneWayANOVA.sw-KE.resx">
       <DependentUpon>dlgOneWayANOVA.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgOpenSST.fr-FR.resx">
+      <DependentUpon>dlgOpenSST.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgOpenSST.resx">
+      <DependentUpon>dlgOpenSST.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgOpenSST.sw-KE.resx">
+      <DependentUpon>dlgOpenSST.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgPermuteColumn.fr-FR.resx">
       <DependentUpon>dlgPermuteColumn.vb</DependentUpon>
@@ -2362,6 +2673,9 @@
     <EmbeddedResource Include="dlgRowNamesOrNumbers.resx">
       <DependentUpon>dlgRowNamesOrNumbers.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgRugPlot.resx">
+      <DependentUpon>dlgRugPlot.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgScatterPlot.fr-FR.resx">
       <DependentUpon>dlgScatterPlot.vb</DependentUpon>
     </EmbeddedResource>
@@ -2397,6 +2711,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="dlgSummaryBarOrPieChart.sw-KE.resx">
       <DependentUpon>dlgSummaryBarOrPieChart.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgShowModel.fr-FR.resx">
+      <DependentUpon>dlgShowModel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgShowModel.resx">
+      <DependentUpon>dlgShowModel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgShowModel.sw-KE.resx">
+      <DependentUpon>dlgShowModel.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgThemes.fr-FR.resx">
       <DependentUpon>dlgThemes.vb</DependentUpon>
@@ -2452,6 +2775,12 @@
     <EmbeddedResource Include="dlgTwoSampleSummaryData.sw-KE.resx">
       <DependentUpon>dlgTwoSampleSummaryData.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="dlgTwoVariabletabulate.resx">
+      <DependentUpon>dlgTwoVariabletabulate.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="dlgTwoVariableUseModel.resx">
+      <DependentUpon>dlgTwoVariableUseModel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="dlgUnusedLevels.fr-FR.resx">
       <DependentUpon>dlgUnusedLevels.vb</DependentUpon>
     </EmbeddedResource>
@@ -2460,6 +2789,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="dlgUnusedLevels.sw-KE.resx">
       <DependentUpon>dlgUnusedLevels.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DlgUseDate.resx">
+      <DependentUpon>DlgUseDate.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="dlgUseGraph.fr-FR.resx">
       <DependentUpon>dlgUseGraph.vb</DependentUpon>
@@ -2533,6 +2865,24 @@
     <EmbeddedResource Include="dlgRecodeFactor.sw-KE.resx">
       <DependentUpon>dlgRecodeFactor.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="sdgAddNewDistribution.fr-FR.resx">
+      <DependentUpon>sdgAddNewDistribution.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgAddNewDistribution.resx">
+      <DependentUpon>sdgAddNewDistribution.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgAddNewDistribution.sw-KE.resx">
+      <DependentUpon>sdgAddNewDistribution.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgCalculationsSummmary.fr-FR.resx">
+      <DependentUpon>sdgCalculationsSummmary.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgCalculationsSummmary.resx">
+      <DependentUpon>sdgCalculationsSummmary.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgCalculationsSummmary.sw-KE.resx">
+      <DependentUpon>sdgCalculationsSummmary.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="sdgCanonicalCorrelation.fr-FR.resx">
       <DependentUpon>sdgCanonicalCorrelation.vb</DependentUpon>
     </EmbeddedResource>
@@ -2541,6 +2891,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="sdgCanonicalCorrelation.sw-KE.resx">
       <DependentUpon>sdgCanonicalCorrelation.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgClimdexIndices.resx">
+      <DependentUpon>sdgClimdexIndices.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="sdgCorrPlot.fr-FR.resx">
       <DependentUpon>sdgCorrPlot.vb</DependentUpon>
@@ -2569,8 +2922,44 @@
     <EmbeddedResource Include="sdgDataOptions.sw-KE.resx">
       <DependentUpon>sdgDataOptions.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="sdgDescribeTwoVarGraph.fr-FR.resx">
+      <DependentUpon>sdgDescribeTwoVarGraph.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgDescribeTwoVarGraph.resx">
+      <DependentUpon>sdgDescribeTwoVarGraph.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgDescribeTwoVarGraph.sw-KE.resx">
+      <DependentUpon>sdgDescribeTwoVarGraph.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgFactorDataFrame.resx">
+      <DependentUpon>sdgFactorDataFrame.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgMerge.fr-FR.resx">
+      <DependentUpon>sdgMerge.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgMerge.resx">
+      <DependentUpon>sdgMerge.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgMerge.sw-KE.resx">
+      <DependentUpon>sdgMerge.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgOneVarCompareModels.resx">
+      <DependentUpon>sdgOneVarCompareModels.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgOneVarFitModDisplay.resx">
+      <DependentUpon>sdgOneVarFitModDisplay.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgOneVarFitModel.resx">
+      <DependentUpon>sdgOneVarFitModel.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="sdgOneVarGraph.resx">
       <DependentUpon>sdgOneVarGraph.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgOneVarUseModBootstrap.resx">
+      <DependentUpon>sdgOneVarUseModBootstrap.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="sdgOneVarUseModFit.resx">
+      <DependentUpon>sdgOneVarUseModFit.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="sdgSummaries.fr-FR.resx">
       <DependentUpon>sdgSummaries.vb</DependentUpon>
@@ -2589,15 +2978,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="sdgDescribeDisplay.sw-KE.resx">
       <DependentUpon>sdgDescribeDisplay.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="sdgFrequencyPolygonOptions.fr-FR.resx">
-      <DependentUpon>sdgFrequencyPolygonOptions.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="sdgFrequencyPolygonOptions.resx">
-      <DependentUpon>sdgFrequencyPolygonOptions.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="sdgFrequencyPolygonOptions.sw-KE.resx">
-      <DependentUpon>sdgFrequencyPolygonOptions.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="sdgLayerOptions.fr-FR.resx">
       <DependentUpon>sdgLayerOptions.vb</DependentUpon>
@@ -3725,15 +4105,6 @@
     <EmbeddedResource Include="sdgSimpleRegOptions.sw-KE.resx">
       <DependentUpon>sdgSimpleRegOptions.vb</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="sdgThemeOptions.fr-FR.resx">
-      <DependentUpon>sdgThemeOptions.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="sdgThemeOptions.resx">
-      <DependentUpon>sdgThemeOptions.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="sdgThemeOptions.sw-KE.resx">
-      <DependentUpon>sdgThemeOptions.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="sdgVariableTransformations.fr-FR.resx">
       <DependentUpon>sdgVariableTransformations.vb</DependentUpon>
     </EmbeddedResource>
@@ -3773,6 +4144,18 @@
     <EmbeddedResource Include="ucrButtonsSubdialogue.sw-KE.resx">
       <DependentUpon>ucrButtonsSubdialogue.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ucrCalculator.fr-FR.resx">
+      <DependentUpon>ucrCalculator.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucrCalculator.resx">
+      <DependentUpon>ucrCalculator.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucrCalculator.sw-KE.resx">
+      <DependentUpon>ucrCalculator.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucrCheck.resx">
+      <DependentUpon>ucrCheck.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ucrColors.fr-FR.resx">
       <DependentUpon>ucrColors.vb</DependentUpon>
     </EmbeddedResource>
@@ -3808,6 +4191,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ucrDataSelection.sw-KE.resx">
       <DependentUpon>ucrDataSelection.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucrDialogDisabled.fr-FR.resx">
+      <DependentUpon>ucrDialogDisabled.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucrDialogDisabled.resx">
+      <DependentUpon>ucrDialogDisabled.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucrDialogDisabled.sw-KE.resx">
+      <DependentUpon>ucrDialogDisabled.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ucrDistributions.fr-FR.resx">
       <DependentUpon>ucrDistributions.vb</DependentUpon>
@@ -3935,6 +4327,12 @@
     <EmbeddedResource Include="ucrNewColumnName.sw-KE.resx">
       <DependentUpon>ucrNewColumnName.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ucrNud.resx">
+      <DependentUpon>ucrNud.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ucrRadio.resx">
+      <DependentUpon>ucrRadio.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ucrReceiverExpression.fr-FR.resx">
       <DependentUpon>ucrReceiverExpression.vb</DependentUpon>
     </EmbeddedResource>
@@ -4057,6 +4455,9 @@
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
     <None Include="ClassDiagram2.cd" />
+    <Content Include="LICENCE">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -4069,167 +4470,275 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="lib\ANTLR 3 License.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\Antlr3.Runtime.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\DynamicInterop.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\DynamicInterop.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\FastColoredTextBox License.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\FastColoredTextBox.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\RDotNet.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\RDotNet.NativeLibrary.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\RDotNet.NativeLibrary.XML">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\RDotNet.XML">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\unvell.ReoGrid.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\unvell.ReoGrid.XML">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lib\unvell.ReoScript.dll" />
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\abind_1.4-5.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\class_7.3-14.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\dendextend_1.2.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\DEoptimR_1.0-4.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\DEoptimR_1.0-6.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\devtools_1.12.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\diptest_0.75-7.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\dplyr_0.5.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\dummies_1.5.6.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\flexmix_2.3-13.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\fpc_2.1-10.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\GGally_1.2.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\ggthemes_3.2.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\haven_0.2.1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\heplots_1.3-1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="lib\Antlr3.Runtime.dll" />
+    <None Include="lib\DynamicInterop.dll" />
+    <None Include="lib\FastColoredTextBox.dll" />
+    <None Include="lib\RDotNet.dll" />
+    <None Include="lib\RDotNet.NativeLibrary.dll" />
+    <None Include="lib\unvell.ReoGrid.dll" />
+    <None Include="lib\unvell.ReoScript.dll" />
     <Content Include="static\InstatObject\R\Backend_Components\link.R">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\httr_1.2.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\httr_1.2.1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\abind_1.4-5.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\jsonlite_0.9.22.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\agridat_1.12.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\jsonlite_1.0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\assertthat_0.1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\kernlab_0.9-24.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\BH_1.60.0-2.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\lazyeval_0.2.0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\bitops_1.0-6.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\mclust_5.2.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\boot_1.3-18.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\mgcv_1.8-13.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\candisc_0.7-0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\mime_0.5.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\chron_2.3-47.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\modeltools_0.2-21.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\CircStats_0.2-4.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\mvtnorm_1.0-5.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\circular_0.4-7.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\openair_1.8-6.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\class_7.3-14.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\plotrix_3.6-3.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\DAAG_1.22.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\plyr_1.8.4.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\data.table_1.9.6.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\prabclus_2.2-6.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\DEoptimR_1.0-6.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\quantreg_5.26.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\devtools_1.12.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\Rcpp_0.12.6.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\dichromat_2.0-0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\rio_0.4.8.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\diptest_0.75-7.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\robustbase_0.92-6.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\distillery_1.0-2.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\rstudioapi_0.6.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\dplyr_0.5.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\survival_2.39-5.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\dummies_1.5.6.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\tibble_1.1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\ellipse_0.3-8.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\tidyr_0.5.1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\Evapotranspiration_1.9.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\trimcluster_0.1-2.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\factoextra_1.0.3.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\withr_1.0.2.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\FactoMineR_1.33.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\xml2_1.0.0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\flashClust_1.01-2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\flexmix_2.3-13.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\formatR_1.4.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\fpc_2.1-10.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\GGally_1.2.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\ggfortify_0.2.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\ggplot2_2.1.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\ggthemes_3.2.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\git2r_0.15.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\GlobalOptions_0.0.10.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\gridExtra_2.2.1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\gtable_0.2.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\hexbin_1.27.1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\highr_0.6.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\httr_1.2.1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\labeling_0.3.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\latticeExtra_0.6-28.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\lazyeval_0.2.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\leaps_2.9.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\lme4_1.1-12.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\Lmoments_1.2-3.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\magrittr_1.5.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\mapdata_2.2-6.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\mapproj_1.2-4.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\markdown_0.7.7.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\MASS_7.3-45.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\MatrixModels_0.4-1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\mclust_5.2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\memoise_1.0.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\mime_0.5.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\minqa_1.2.4.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\modeltools_0.2-21.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\munsell_0.4.3.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\mvtnorm_1.0-5.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\nlme_3.1-128.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\nloptr_1.0.4.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\nnet_7.3-12.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\openxlsx_3.0.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\PACKAGES">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\PACKAGES.gz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\pbkrtest_0.4-6.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\plotrix_3.6-3.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\plyr_1.8.4.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\prabclus_2.2-6.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\R.methodsS3_1.7.1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\R.oo_1.20.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\RColorBrewer_1.1-2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\RCurl_1.95-4.8.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\readODS_1.6.2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\readxl_0.1.1.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\robustbase_0.92-6.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\rstudioapi_0.6.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\rtf_0.4-11.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\scales_0.4.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\scatterplot3d_0.3-37.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\shape_1.4.2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\trimcluster_0.1-2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\whisker_0.3-2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\withr_1.0.2.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\xml2_1.0.0.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\XML_3.98-1.4.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\yaml_2.1.13.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\zoo_1.7-13.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="static\Recent_Files\recent.mru">
@@ -4522,379 +5031,175 @@
     <Content Include="static\InstatObject\R\Backend_Components\calculations.R">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\abind_1.4-3.zip">
+    <Content Include="static\InstatObject\R\extras\ggfortify_0.1.0.tar.gz">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\agridat_1.12.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\car_2.1-3.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\assertthat_0.1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\cellranger_1.1.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\BH_1.60.0-2.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\clifro_3.0-0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\bitops_1.0-6.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\csvy_0.1.3.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\boot_1.3-18.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\DBI_0.5-1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\candisc_0.7-0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\dendextend_1.3.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\car_2.1-2.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\digest_0.6.10.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\CCA_1.2.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\extRemes_2.0-8.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\chron_2.3-47.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\fitdistrplus_1.0-7.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\circlize_0.3.7.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\foreign_0.8-67.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\CircStats_0.2-4.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\hms_0.2.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\circular_0.4-7.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\jsonlite_1.1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\clifro_2.4-1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\knitr_1.14.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\cluster_2.0.4.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\lattice_0.20-34.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\colorspace_1.2-6.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\lubridate_1.6.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\curl_0.9.7.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\maps_3.1.1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\DAAG_1.22.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\Matrix_1.2-7.1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\data.table_1.9.6.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\mgcv_1.8-15.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\DBI_0.4-1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\quantreg_5.29.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\dendextend_1.1.8.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\RcppEigen_0.3.2.9.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\devtools_1.11.1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\Rcpp_0.12.7.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\dichromat_2.0-0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\readr_1.0.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\digest_0.6.9.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\rematch_1.0.1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\distillery_1.0-2.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\selectr_0.3-0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\dplyr_0.4.3.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\SparseM_1.72.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\ellipse_0.3-8.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\stringr_1.1.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\evaluate_0.9.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\tibble_1.2.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\Evapotranspiration_1.9.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\tidyr_0.6.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\extRemes_2.0-7.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\triebeard_0.3.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\factoextra_1.0.3.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\visreg_2.3-0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\FactoMineR_1.33.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\caTools_1.17.1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\fda_2.4.4.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\circlize_0.3.9.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\fields_8.4-1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\climdex.pcic_1.1-6.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\flashClust_1.01-2.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\cluster_2.0.5.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\formatR_1.4.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\colorspace_1.2-7.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\ggplot2_2.1.0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\curl_2.2.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\ggrepel_0.5.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\evaluate_0.10.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\git2r_0.15.0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\ggdendro_0.1-20.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\GlobalOptions_0.0.10.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\ggrepel_0.6.3.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\gridExtra_2.2.1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\haven_1.0.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\gtable_0.2.0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\heplots_1.3-3.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\heplots_1.2-0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\kernlab_0.9-25.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\hexbin_1.27.1.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\mosaicData_0.14.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\highr_0.6.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\mosaic_0.14.4.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\httr_1.1.0.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\openair_1.9-0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\jsonlite_0.9.20.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\openssl_0.9.5.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\knitr_1.13.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\PCICt_0.5-4.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\labeling_0.3.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\R6_2.2.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\latticeExtra_0.6-28.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\reshape2_1.4.2.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\lattice_0.20-33.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\reshape_0.8.6.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\lazyeval_0.1.10.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\rio_0.4.16.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\leaps_2.9.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\stringi_1.1.2.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\lme4_1.1-12.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\survival_2.40-1.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\Lmoments_1.2-3.zip">
+    <Content Include="static\InstatObject\R\extras\bin\windows\contrib\3.3\urltools_1.6.0.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\lubridate_1.5.6.zip">
+    <Content Include="static\Help\Case_Study_Guide_June_2016.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\magrittr_1.5.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\mapdata_2.2-6.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\mapproj_1.2-4.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\maps_3.1.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\markdown_0.7.7.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\MASS_7.3-45.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\MatrixModels_0.4-1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\Matrix_1.2-6.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\memoise_1.0.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\mgcv_1.8-12.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\mime_0.4.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\minqa_1.2.4.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\munsell_0.4.3.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\nlme_3.1-128.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\nloptr_1.0.4.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\nnet_7.3-12.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\openair_1.8-2.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\openssl_0.9.4.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\openxlsx_3.0.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\PACKAGES">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\PACKAGES.gz">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\pbkrtest_0.4-6.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\plotrix_3.6-2.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\plyr_1.8.3.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\png_0.1-7.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\proto_0.3-10.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\quantreg_5.24.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\R.methodsS3_1.7.1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\R.oo_1.20.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\R6_2.1.2.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\RColorBrewer_1.1-2.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\RcppEigen_0.3.2.8.1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\Rcpp_0.12.5.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\RCurl_1.95-4.8.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\reshape2_1.4.1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\reshape_0.8.5.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\RgoogleMaps_1.2.0.7.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\RJSONIO_1.3-0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\rstudioapi_0.5.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\rtf_0.4-11.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\scales_0.4.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\scatterplot3d_0.3-37.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\selectr_0.2-3.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\shape_1.4.2.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\spam_1.3-0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\SparseM_1.7.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\stringi_1.1.1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\stringr_1.0.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\survival_2.39-4.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\tidyr_0.4.1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\whisker_0.3-2.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\withr_1.0.1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\XML_3.98-1.4.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\yaml_2.1.13.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\zoo_1.7-13.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\ggfortify_0.1.0.tar.gz">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\ggfortify_0.2.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\GGally_1.1.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\cellranger_1.0.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\feather_0.0.1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\foreign_0.8-66.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\haven_0.2.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\readODS_1.6.2.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\readr_0.2.2.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\readxl_0.1.1.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\rio_0.4.6.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\tibble_1.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\urltools_1.4.0.zip">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="static\InstatObject\R\RPackages\bin\windows\contrib\3.3\xml2_0.1.2.zip">
+    <Content Include="static\Help\Statistics Glossary.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

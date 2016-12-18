@@ -97,19 +97,20 @@ Public Class ucrFactor
     End Sub
 
     Private Sub RefreshFactorData()
-        Dim dfTemp As CharacterMatrix
+        Dim dfTemp As DataFrame
         Dim bShowGrid As Boolean = False
         Dim clsGetFactorData As New RFunction
         Dim clsConvertToCharacter As New RFunction
 
         grdFactorData.Worksheets.Clear()
-        If clsReceiver IsNot Nothing AndAlso Not clsReceiver.IsEmpty() AndAlso clsReceiver.strCurrDataType = "factor" Then
+        ' Contains allows ordered factors to be included
+        If clsReceiver IsNot Nothing AndAlso Not clsReceiver.IsEmpty() AndAlso clsReceiver.strCurrDataType.Contains("factor") Then
             clsGetFactorData.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$get_factor_data_frame")
             clsGetFactorData.AddParameter("data_name", Chr(34) & clsReceiver.GetDataName() & Chr(34))
             clsGetFactorData.AddParameter("col_name", clsReceiver.GetVariableNames())
             clsConvertToCharacter.SetRCommand("convert_to_character_matrix")
             clsConvertToCharacter.AddParameter("data", clsRFunctionParameter:=clsGetFactorData)
-            dfTemp = frmMain.clsRLink.RunInternalScriptGetValue(clsConvertToCharacter.ToScript()).AsCharacterMatrix
+            dfTemp = frmMain.clsRLink.RunInternalScriptGetValue(clsConvertToCharacter.ToScript()).AsDataFrame
             frmMain.clsGrids.FillSheet(dfTemp, "Factor Data", grdFactorData)
             shtCurrSheet = grdFactorData.CurrentWorksheet
             shtCurrSheet.SetSettings(unvell.ReoGrid.WorksheetSettings.Edit_DragSelectionToMoveCells, False)
@@ -148,6 +149,8 @@ Public Class ucrFactor
         grdFactorData.Visible = bShowGrid
         If shtCurrSheet IsNot Nothing Then
             shtCurrSheet.SetSettings(unvell.ReoGrid.WorksheetSettings.Edit_Readonly, Not bIsEditable)
+            shtCurrSheet.SetSettings(unvell.ReoGrid.WorksheetSettings.Edit_DragSelectionToMoveCells, False)
+            shtCurrSheet.SelectionForwardDirection = unvell.ReoGrid.SelectionForwardDirection.Down
             ApplyColumnSettings()
         End If
     End Sub
@@ -375,5 +378,16 @@ Public Class ucrFactor
 
     Private Sub shtCurrSheet_RangeDataChanged(sender As Object, e As RangeEventArgs) Handles shtCurrSheet.RangeDataChanged
         UpdateCells(e.Range.Col)
+    End Sub
+
+    Private Sub shtCurrSheet_BeforeCellKeyDown(sender As Object, e As BeforeCellKeyDownEventArgs) Handles shtCurrSheet.BeforeCellKeyDown
+        If e.KeyCode = unvell.ReoGrid.Interaction.KeyCode.Delete OrElse e.KeyCode = unvell.ReoGrid.Interaction.KeyCode.Back Then
+            MsgBox("Deleting cells is currently disabled. This feature will be included in future versions." & vbNewLine & "To remove a cell's value, replace the value with NA.", MsgBoxStyle.Information, "Cannot delete cells.")
+            e.IsCancelled = True
+        End If
+    End Sub
+
+    Private Sub shtCurrSheet_BeforeCut(sender As Object, e As BeforeRangeOperationEventArgs) Handles shtCurrSheet.BeforeCut
+        e.IsCancelled = True
     End Sub
 End Class

@@ -53,27 +53,29 @@ Public Class dlgCumulativeDistribution
 
 
         ucrSaveCumDist.SetDataFrameSelector(ucrCumDistSelector.ucrAvailableDataFrames)
-        ucrSaveCumDist.strPrefix = "Graph"
+        ucrBase.clsRsyntax.bExcludeAssignedFunctionOutput = False
     End Sub
 
     Private Sub SetDefaults()
         'set defaults here 
+        ucrSaveCumDist.strPrefix = "Graph"
         ucrCumDistSelector.Reset()
         ucrCumDistSelector.Focus()
         ucrVariablesAsFactorforCumDist.ResetControl()
         chkCountsOnYAxis.Checked = False
         chkExceedancePlots.Checked = False
         chkIncludePoints.Checked = False
+        ucrSaveCumDist.Reset()
         sdgPlots.Reset()
         TestOkEnabled()
     End Sub
 
     Private Sub TestOkEnabled()
         'TODO what enables ok
-        If Not ucrVariablesAsFactorforCumDist.IsEmpty Then
-            ucrBase.OKEnabled(True)
-        Else
+        If ucrVariablesAsFactorforCumDist.IsEmpty OrElse (ucrSaveCumDist.chkSaveGraph.Checked AndAlso ucrSaveCumDist.ucrInputGraphName.IsEmpty) Then
             ucrBase.OKEnabled(False)
+        Else
+            ucrBase.OKEnabled(True)
         End If
     End Sub
     Private Sub ucrCumDistSelector_DataFrameChanged() Handles ucrCumDistSelector.DataFrameChanged
@@ -114,15 +116,21 @@ Public Class dlgCumulativeDistribution
     Private Sub ucrSaveCumDist_GraphNameChanged() Handles ucrSaveCumDist.GraphNameChanged, ucrSaveCumDist.SaveGraphCheckedChanged
         If ucrSaveCumDist.bSaveGraph Then
             ucrBase.clsRsyntax.SetAssignTo(ucrSaveCumDist.strGraphName, strTempDataframe:=ucrCumDistSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, strTempGraph:=ucrSaveCumDist.strGraphName)
-            ucrBase.clsRsyntax.bExcludeAssignedFunctionOutput = True
         Else
             ucrBase.clsRsyntax.SetAssignTo("last_graph", strTempDataframe:=ucrCumDistSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, strTempGraph:="last_graph")
-            ucrBase.clsRsyntax.bExcludeAssignedFunctionOutput = False
         End If
     End Sub
 
     Private Sub cmdPlotOptions_Click(sender As Object, e As EventArgs) Handles cmdPlotOptions.Click
         sdgPlots.SetDataFrame(strNewDataFrame:=ucrCumDistSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text)
         sdgPlots.ShowDialog()
+    End Sub
+
+    Private Sub cmdLineOptions_Click(sender As Object, e As EventArgs) Handles cmdLineOptions.Click
+        sdgLayerOptions.ShowDialog()
+    End Sub
+
+    Private Sub ucrSaveCumDist_ContentsChanged() Handles ucrSaveCumDist.ContentsChanged
+        TestOkEnabled()
     End Sub
 End Class

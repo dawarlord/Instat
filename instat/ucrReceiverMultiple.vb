@@ -14,7 +14,11 @@
 ' You should have received a copy of the GNU General Public License k
 ' along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+Imports RDotNet
+
 Public Class ucrReceiverMultiple
+
+    Public bSingleType As Boolean = False
 
     Private Sub ucrReceiverMultiple_Load(sender As Object, e As EventArgs) Handles Me.Load
         If bFirstLoad Then
@@ -182,6 +186,9 @@ Public Class ucrReceiverMultiple
                 If frmMain.clsInstatOptions.bIncludeRDefaultParameters Then
                     clsColumnFunction.AddParameter("force_as_data_frame", "FALSE")
                 End If
+                If Not bUseFilteredData Then
+                    clsColumnFunction.AddParameter("use_current_filter", "FALSE")
+                End If
                 lstColumnFunctions.Add(clsColumnFunction)
             Next
         End If
@@ -327,5 +334,107 @@ Public Class ucrReceiverMultiple
             SetMeAsReceiver()
             frmMain.clsRLink.SelectColumnsWithMetadataProperty(Me, strCurrentDataFrame, strProperty, strValues)
         End If
+    End Sub
+
+    Public Function GetCurrentItemTypes(Optional bUnique As Boolean = False) As List(Of String)
+        Dim clsGetDataType As New RFunction
+        Dim strDataTypes As New List(Of String)
+        Dim strDataFrame As String
+        Dim strCurrentType As String
+
+        If Selector IsNot Nothing Then
+            If bTypeSet Then
+                strCurrentType = strType
+            Else
+                strCurrentType = Selector.GetItemType()
+            End If
+
+            If strCurrentType = "column" AndAlso GetDataFrameNames().Count = 1 Then
+                strDataFrame = GetDataFrameNames()(0)
+                clsGetDataType.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$get_variables_metadata")
+                clsGetDataType.AddParameter("property", "data_type_label")
+                clsGetDataType.AddParameter("data_name", Chr(34) & strDataFrame & Chr(34))
+                clsGetDataType.AddParameter("column", GetVariableNames())
+                strDataTypes = frmMain.clsRLink.RunInternalScriptGetValue(clsGetDataType.ToScript()).AsCharacter.ToList()
+                If bUnique Then
+                    strDataTypes = strDataTypes.Distinct().ToList()
+                End If
+            End If
+        End If
+        Return strDataTypes
+    End Function
+
+    Public Function IsSingleType() As Boolean
+        Return GetCurrentItemTypes(True).Count = 1
+    End Function
+
+    Public Function IsAllNumeric() As Boolean
+        Dim lstUniqueTypes As List(Of String)
+        Dim i As Integer
+
+        lstUniqueTypes = GetCurrentItemTypes(True)
+        For i = 0 To lstUniqueTypes.Count - 1
+            If lstUniqueTypes(i) = "integer" Then
+                lstUniqueTypes(i) = "numeric"
+            End If
+        Next
+        lstUniqueTypes = lstUniqueTypes.Distinct.ToList()
+        Return lstUniqueTypes.Count = 1
+    End Function
+
+    ' Categorical is defined as everything that isnt numeric
+    ' This may change as more types are added
+    Public Function IsAllCategorical() As Boolean
+        Dim lstUniqueTypes As List(Of String)
+        Dim i As Integer
+        Dim bAllCat As Boolean
+
+        bAllCat = True
+        lstUniqueTypes = GetCurrentItemTypes(True)
+        For i = 0 To lstUniqueTypes.Count - 1
+            If lstUniqueTypes(i) = "integer" OrElse lstUniqueTypes(i) = "numeric" Then
+                bAllCat = False
+                Exit For
+            End If
+        Next
+        Return bAllCat
+    End Function
+
+    Public Sub CheckSingleType()
+        Dim strVariableTypes As List(Of String)
+        Dim strVarType As String
+
+        If bSingleType Then
+            If (Not IsEmpty()) Then
+                strVariableTypes = GetCurrentItemTypes(True)
+                If strVariableTypes.Count > 1 AndAlso Not (strVariableTypes.Count = 2 AndAlso strVariableTypes.Contains("numeric") AndAlso strVariableTypes.Contains("integer")) AndAlso Not (strVariableTypes.Count = 2 AndAlso strVariableTypes.Contains("factor") AndAlso strVariableTypes.Contains("ordered,factor")) Then
+                    MsgBox("Cannot add these variables. All variables must be of the same data type.", MsgBoxStyle.OkOnly, "Cannot add variables.")
+                    Clear()
+                Else
+                    If strVariableTypes(0) = "integer" Then
+                        SetDataType("numeric")
+                    ElseIf strVariableTypes(0) = "ordered,factor" Then
+                        SetDataType("factor")
+                    Else
+                        SetDataType(strVariableTypes(0))
+                    End If
+                End If
+            Else
+                RemoveIncludedMetadataProperty(strProperty:="class")
+            End If
+        Else
+            ' Removed as this was causing data type to be removed on reset for any receiver
+            ' Left as comment in case this cause other issues
+            'RemoveIncludedMetadataProperty(strProperty:="class")
+        End If
+    End Sub
+
+    Public Sub SetSingleTypeStatus(bIsSingleType As Boolean)
+        bSingleType = bIsSingleType
+        CheckSingleType()
+    End Sub
+
+    Private Sub ucrReceiverMultiple_SelectionChanged(sender As Object, e As EventArgs) Handles Me.SelectionChanged
+        CheckSingleType()
     End Sub
 End Class

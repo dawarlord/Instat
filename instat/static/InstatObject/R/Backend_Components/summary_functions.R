@@ -19,6 +19,7 @@ data_object$set("public", "merge_data", function(new_data, by = NULL, type = "le
   else stop("type must be one of left, right, inner or full")
   self$set_data(new_data)
   self$append_to_changes(Merged_data)
+  #TODO will column/row count be correct here?
   for(name in names(old_metadata)) {
     if(!name %in% c("names", "class", "row.names")) {
       self$append_to_metadata(name, old_metadata[[name]])
@@ -32,19 +33,12 @@ data_object$set("public", "merge_data", function(new_data, by = NULL, type = "le
 
 instat_object$set("public", "append_summaries_to_data_object", function(out, data_name, columns_to_summarise, summaries, factors = c(), summary_name, calc, calc_name = "") {
   if(!is.character(data_name)) stop("data_name must be of type character")
-  factors_list <- factors
-  names(factors_list) <- factors
-  link_calc <- calculation$new(type = "summary", parameters = factors_list)
-  link_obj <- link$new(from_data_frame = data_name, type = keyed_link_label, calculation = link_calc)
+  
   exists = FALSE
-  for(data_obj in self$get_data_objects()) {
-    link_obj$to_data_frame <- data_obj$get_metadata(data_name_label)
-    if(self$link_exists(link_obj)) {
-      exists = TRUE
-      summary_obj <- data_obj
-      summary_name <- summary_obj$get_metadata(data_name_label)
-      break
-    }
+  if(self$link_exists_from(data_name, factors)) {
+    summary_name <- self$get_linked_to_data_name(data_name, factors)
+    summary_obj <- self$get_data_objects(summary_name)
+    exists <- TRUE
   }
   if(exists) {
     #temp fix to avoid error merging data with overlapping names
@@ -65,10 +59,10 @@ instat_object$set("public", "append_summaries_to_data_object", function(out, dat
     summary_data[[summary_name]] <- out
     self$import_data(summary_data)
     summary_obj <- self$get_data_objects(summary_name)
-    summary_obj$add_key(factors)
-    # add link
-    link_obj$to_data_frame <- summary_name
-    self$add_link(link_obj)
+    # TODO Should the be done here or in add_link?
+    #summary_obj$add_key(factors)
+    names(factors) <- factors
+    self$add_link(data_name, summary_name, factors, keyed_link_label)
   }
   
   calc_out_columns <- names(out)[-(1:length(factors))]
@@ -157,6 +151,8 @@ data_object$set("public", "calculate_summary", function(calc, ...) {
   factors = calc[["parameters"]][["factors"]]
   drop = calc[["parameters"]][["drop"]]
   add_cols = calc[["parameters"]][["add_cols"]]
+  if("na.rm" %in% names(calc[["parameters"]])) na.rm = calc[["parameters"]][["na.rm"]]
+  else na.rm = FALSE
   filter_names = calc[["filters"]]
   if(missing(columns_to_summarise)) stop("columns_to_summarise must be specified")
   if(missing(summaries)) stop("summaries must be specified")
@@ -191,7 +187,8 @@ data_object$set("public", "calculate_summary", function(calc, ...) {
     if(!all(factors %in% names(curr_data_filter))) stop(paste("Some of the factors:","c(",paste(factors, collapse = ","),") were not found in the data."))
     
     out <- ddply(curr_data_filter, factors, function(x) apply(combinations, 1, FUN = function(y) {
-      na.rm <- missing_values_check(x[[y[[2]]]])
+      # temp disabled to allow na.rm to be passed in
+      #na.rm <- missing_values_check(x[[y[[2]]]])
       if("na.rm" %in% names(list(...))) stop("na.rm should not be specified. Use xxx to specify missing values handling.")
       match.fun(y[[1]])(x[[y[[2]]]], add_cols = x[add_cols], na.rm = na.rm, ...)
     }

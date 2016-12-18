@@ -30,6 +30,7 @@ Partial Class sdgDescribeDisplay
         Me.grpFrequenciesOptions = New System.Windows.Forms.GroupBox()
         Me.chkPercentages = New System.Windows.Forms.CheckBox()
         Me.grpAnovaOptions = New System.Windows.Forms.GroupBox()
+        Me.chkMeans = New System.Windows.Forms.CheckBox()
         Me.chkSignifStars = New System.Windows.Forms.CheckBox()
         Me.grpFrequenciesOptions.SuspendLayout()
         Me.grpAnovaOptions.SuspendLayout()
@@ -37,7 +38,7 @@ Partial Class sdgDescribeDisplay
         '
         'ucrButtonsDescribeDisplay
         '
-        Me.ucrButtonsDescribeDisplay.Location = New System.Drawing.Point(32, 160)
+        Me.ucrButtonsDescribeDisplay.Location = New System.Drawing.Point(32, 178)
         Me.ucrButtonsDescribeDisplay.Name = "ucrButtonsDescribeDisplay"
         Me.ucrButtonsDescribeDisplay.Size = New System.Drawing.Size(142, 30)
         Me.ucrButtonsDescribeDisplay.TabIndex = 2
@@ -56,7 +57,7 @@ Partial Class sdgDescribeDisplay
         'chkTranspose
         '
         Me.chkTranspose.AutoSize = True
-        Me.chkTranspose.Location = New System.Drawing.Point(99, 21)
+        Me.chkTranspose.Location = New System.Drawing.Point(99, 18)
         Me.chkTranspose.Name = "chkTranspose"
         Me.chkTranspose.Size = New System.Drawing.Size(76, 17)
         Me.chkTranspose.TabIndex = 5
@@ -67,7 +68,7 @@ Partial Class sdgDescribeDisplay
         'chkProportions
         '
         Me.chkProportions.AutoSize = True
-        Me.chkProportions.Location = New System.Drawing.Point(8, 44)
+        Me.chkProportions.Location = New System.Drawing.Point(8, 40)
         Me.chkProportions.Name = "chkProportions"
         Me.chkProportions.Size = New System.Drawing.Size(79, 17)
         Me.chkProportions.TabIndex = 2
@@ -78,7 +79,7 @@ Partial Class sdgDescribeDisplay
         'chkAddMargins
         '
         Me.chkAddMargins.AutoSize = True
-        Me.chkAddMargins.Location = New System.Drawing.Point(8, 21)
+        Me.chkAddMargins.Location = New System.Drawing.Point(8, 18)
         Me.chkAddMargins.Name = "chkAddMargins"
         Me.chkAddMargins.Size = New System.Drawing.Size(85, 17)
         Me.chkAddMargins.TabIndex = 3
@@ -92,9 +93,9 @@ Partial Class sdgDescribeDisplay
         Me.grpFrequenciesOptions.Controls.Add(Me.chkPercentages)
         Me.grpFrequenciesOptions.Controls.Add(Me.chkProportions)
         Me.grpFrequenciesOptions.Controls.Add(Me.chkAddMargins)
-        Me.grpFrequenciesOptions.Location = New System.Drawing.Point(7, 3)
+        Me.grpFrequenciesOptions.Location = New System.Drawing.Point(12, 12)
         Me.grpFrequenciesOptions.Name = "grpFrequenciesOptions"
-        Me.grpFrequenciesOptions.Size = New System.Drawing.Size(190, 73)
+        Me.grpFrequenciesOptions.Size = New System.Drawing.Size(190, 64)
         Me.grpFrequenciesOptions.TabIndex = 112
         Me.grpFrequenciesOptions.TabStop = False
         Me.grpFrequenciesOptions.Tag = "Frequencies_Options"
@@ -103,7 +104,7 @@ Partial Class sdgDescribeDisplay
         'chkPercentages
         '
         Me.chkPercentages.AutoSize = True
-        Me.chkPercentages.Location = New System.Drawing.Point(99, 44)
+        Me.chkPercentages.Location = New System.Drawing.Point(99, 40)
         Me.chkPercentages.Name = "chkPercentages"
         Me.chkPercentages.Size = New System.Drawing.Size(86, 17)
         Me.chkPercentages.TabIndex = 4
@@ -113,20 +114,32 @@ Partial Class sdgDescribeDisplay
         '
         'grpAnovaOptions
         '
+        Me.grpAnovaOptions.Controls.Add(Me.chkMeans)
         Me.grpAnovaOptions.Controls.Add(Me.chkSignifLevel)
         Me.grpAnovaOptions.Controls.Add(Me.chkSignifStars)
-        Me.grpAnovaOptions.Location = New System.Drawing.Point(7, 86)
+        Me.grpAnovaOptions.Location = New System.Drawing.Point(12, 86)
         Me.grpAnovaOptions.Name = "grpAnovaOptions"
-        Me.grpAnovaOptions.Size = New System.Drawing.Size(157, 63)
+        Me.grpAnovaOptions.Size = New System.Drawing.Size(190, 86)
         Me.grpAnovaOptions.TabIndex = 111
         Me.grpAnovaOptions.TabStop = False
         Me.grpAnovaOptions.Tag = "Anova_Options"
         Me.grpAnovaOptions.Text = "Anova Options"
         '
+        'chkMeans
+        '
+        Me.chkMeans.AutoSize = True
+        Me.chkMeans.Location = New System.Drawing.Point(8, 61)
+        Me.chkMeans.Name = "chkMeans"
+        Me.chkMeans.Size = New System.Drawing.Size(58, 17)
+        Me.chkMeans.TabIndex = 2
+        Me.chkMeans.Tag = "Means"
+        Me.chkMeans.Text = "Means"
+        Me.chkMeans.UseVisualStyleBackColor = True
+        '
         'chkSignifStars
         '
         Me.chkSignifStars.AutoSize = True
-        Me.chkSignifStars.Location = New System.Drawing.Point(8, 20)
+        Me.chkSignifStars.Location = New System.Drawing.Point(8, 19)
         Me.chkSignifStars.Name = "chkSignifStars"
         Me.chkSignifStars.Size = New System.Drawing.Size(111, 17)
         Me.chkSignifStars.TabIndex = 0
@@ -138,14 +151,15 @@ Partial Class sdgDescribeDisplay
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(219, 191)
+        Me.ClientSize = New System.Drawing.Size(219, 213)
         Me.Controls.Add(Me.grpFrequenciesOptions)
         Me.Controls.Add(Me.grpAnovaOptions)
         Me.Controls.Add(Me.ucrButtonsDescribeDisplay)
-        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
         Me.MaximizeBox = False
         Me.MinimizeBox = False
         Me.Name = "sdgDescribeDisplay"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Tag = "Describe_Display_Options"
         Me.Text = "Describe Display Options"
         Me.grpFrequenciesOptions.ResumeLayout(False)
@@ -165,4 +179,5 @@ Partial Class sdgDescribeDisplay
     Friend WithEvents chkPercentages As CheckBox
     Friend WithEvents grpAnovaOptions As GroupBox
     Friend WithEvents chkSignifStars As CheckBox
+    Friend WithEvents chkMeans As CheckBox
 End Class

@@ -28,27 +28,30 @@ Partial Class dlgHideDataframes
         '
         'ucrBase
         '
-        Me.ucrBase.Location = New System.Drawing.Point(9, 70)
+        Me.ucrBase.Location = New System.Drawing.Point(12, 197)
         Me.ucrBase.Name = "ucrBase"
-        Me.ucrBase.Size = New System.Drawing.Size(403, 52)
-        Me.ucrBase.TabIndex = 0
+        Me.ucrBase.Size = New System.Drawing.Size(410, 52)
+        Me.ucrBase.TabIndex = 1
         '
         'ucrDataframeHide
         '
+        Me.ucrDataframeHide.bUseCurrentFilter = False
         Me.ucrDataframeHide.Location = New System.Drawing.Point(9, 9)
         Me.ucrDataframeHide.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrDataframeHide.Name = "ucrDataframeHide"
-        Me.ucrDataframeHide.Size = New System.Drawing.Size(120, 40)
-        Me.ucrDataframeHide.TabIndex = 1
+        Me.ucrDataframeHide.Size = New System.Drawing.Size(120, 50)
+        Me.ucrDataframeHide.TabIndex = 0
         '
         'dlgHideDataframes
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(414, 137)
+        Me.ClientSize = New System.Drawing.Size(422, 261)
         Me.Controls.Add(Me.ucrDataframeHide)
         Me.Controls.Add(Me.ucrBase)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "dlgHideDataframes"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Tag = "Hide_Dataframes"

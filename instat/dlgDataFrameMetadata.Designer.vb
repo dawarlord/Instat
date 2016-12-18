@@ -27,22 +27,24 @@ Partial Class dlgDataFrameMetaData
         '
         'ucrBase
         '
-        Me.ucrBase.Location = New System.Drawing.Point(11, 196)
+        Me.ucrBase.Location = New System.Drawing.Point(12, 197)
         Me.ucrBase.Name = "ucrBase"
-        Me.ucrBase.Size = New System.Drawing.Size(410, 53)
+        Me.ucrBase.Size = New System.Drawing.Size(410, 52)
         Me.ucrBase.TabIndex = 0
         '
         'dlgDataFrameMetaData
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(433, 261)
+        Me.ClientSize = New System.Drawing.Size(420, 261)
         Me.Controls.Add(Me.ucrBase)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "dlgDataFrameMetaData"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Tag = "Sheet_Metadata"
-        Me.Text = "Data Frame Metadata"
+        Me.Text = "Sheet Metadata"
         Me.ResumeLayout(False)
 
     End Sub

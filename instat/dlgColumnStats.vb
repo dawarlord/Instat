@@ -30,8 +30,8 @@ Public Class dlgColumnStats
         TestOKEnabled()
     End Sub
 
-    Private Sub TestOKEnabled()
-        If (Not ucrReceiverSelectedVariables.IsEmpty()) Then
+    Public Sub TestOKEnabled()
+        If (Not ucrReceiverSelectedVariables.IsEmpty() AndAlso Not sdgSummaries.strSummariesParameter = "c()") Then
             ucrBase.OKEnabled(True)
         Else
             ucrBase.OKEnabled(False)
@@ -46,20 +46,23 @@ Public Class dlgColumnStats
         chkStoreResults.Checked = True
         chkPrintOutput.Checked = False
         chkdropUnusedLevels.Checked = False
+        chkOmitMissing.Checked = False
         ucrSelectorForColumnStatistics.Reset()
+        ucrReceiverSelectedVariables.SetMeAsReceiver()
+        sdgSummaries.SetDefaults()
+        TestOKEnabled()
     End Sub
 
     Private Sub InitialiseDialog()
         ucrBase.clsRsyntax.iCallType = 2
         ucrReceiverSelectedVariables.Selector = ucrSelectorForColumnStatistics
         ucrReceiverByFactor.Selector = ucrSelectorForColumnStatistics
-        ucrReceiverSelectedVariables.SetMeAsReceiver()
         ucrReceiverSelectedVariables.SetIncludedDataTypes({"numeric"})
+        ' only allow numeric variables in the first receiver? 
         ucrReceiverByFactor.SetIncludedDataTypes({"factor"}) 'This needs to change
         ucrBase.iHelpTopicID = 64
         clsRColumnStats.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$calculate_summary")
         sdgSummaries.SetMyRFunction(clsRColumnStats)
-        sdgSummaries.SetDefaults()
         ucrBase.clsRsyntax.SetBaseRFunction(clsRColumnStats)
     End Sub
 
@@ -132,5 +135,19 @@ Public Class dlgColumnStats
 
     Private Sub cmdSummaries_Click(sender As Object, e As EventArgs) Handles cmdSummaries.Click
         sdgSummaries.ShowDialog()
+        sdgSummaries.TestSummaries()
+        TestOKEnabled()
+    End Sub
+
+    Private Sub chkExcludeMissing_CheckedChanged(sender As Object, e As EventArgs) Handles chkOmitMissing.CheckedChanged
+        If chkOmitMissing.Checked Then
+            clsRColumnStats.AddParameter("na.rm", "TRUE")
+        Else
+            If frmMain.clsInstatOptions.bIncludeRDefaultParameters Then
+                clsRColumnStats.AddParameter("na.rm", "FALSE")
+            Else
+                clsRColumnStats.RemoveParameterByName("na.rm")
+            End If
+        End If
     End Sub
 End Class

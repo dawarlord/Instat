@@ -54,6 +54,7 @@ Public Class dlgName
         ucrReceiverName.Selector = ucrSelectVariables
         ucrReceiverName.SetMeAsReceiver()
         ucrBase.clsRsyntax.SetFunction(frmMain.clsRLink.strInstatDataObject & "$rename_column_in_data")
+        ucrInputNewName.SetValidationTypeAsRVariable()
     End Sub
 
     Public Sub SetDefaults()
@@ -98,6 +99,7 @@ Public Class dlgName
     End Sub
 
     Private Sub ucrSelectVariables_DataFrameChanged() Handles ucrSelectVariables.DataFrameChanged
+        ucrInputNewName.ResetText()
         ucrBase.clsRsyntax.AddParameter("data_name", Chr(34) & ucrSelectVariables.ucrAvailableDataFrames.cboAvailableDataFrames.SelectedItem & Chr(34))
     End Sub
 End Class

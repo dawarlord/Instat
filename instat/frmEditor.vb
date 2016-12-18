@@ -35,9 +35,13 @@ Public Class frmEditor
     Private clsRemoveFilter As New RFunction
     Private clsFreezeColumns As New RFunction
     Private clsUnfreezeColumns As New RFunction
+    Private clsViewDataFrame As New RFunction
+    Private clsGetDataFrame As New RFunction
     Public lstColumnNames As New List(Of KeyValuePair(Of String, String()))
 
     Private Sub frmEditor_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        FreezeToHereToolStripMenuItem.Enabled = False
+        UnfreezeToolStripMenuItem.Enabled = False
         frmMain.clsGrids.SetData(grdData)
         grdData.Visible = False
         autoTranslate(Me)
@@ -45,7 +49,7 @@ Public Class frmEditor
         'This needs to be added at the part when we are writing data to the grid, not here
         'Needs discussion, with this the grid can show NA's
         grdData.SetSettings(unvell.ReoGrid.WorksheetSettings.Edit_AutoFormatCell, False)
-        'grdData.SetSettings(unvell.ReoGrid.WorksheetSettings.Edit_DragSelectionToMoveCells, False)
+        grdData.SheetTabWidth = 450
         SetRFunctions()
     End Sub
     ''' <summary>
@@ -72,6 +76,8 @@ Public Class frmEditor
         clsRemoveFilter.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$remove_current_filter")
         clsFreezeColumns.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$freeze_columns")
         clsUnfreezeColumns.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$unfreeze_columns")
+        clsGetDataFrame.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$get_data_frame")
+        clsViewDataFrame.SetRCommand("View")
         UpdateRFunctionDataFrameParameters()
     End Sub
 
@@ -402,7 +408,7 @@ Public Class frmEditor
         End If
 
         If bValid Then
-            frmMain.clsRLink.RunScript(clsReplaceValue.ToScript())
+            frmMain.clsRLink.RunScript(clsReplaceValue.ToScript(), strComment:="Replace Value in Data")
         End If
     End Sub
 
@@ -535,6 +541,7 @@ Public Class frmEditor
             clsRemoveFilter.AddParameter("data_name", Chr(34) & grdCurrSheet.Name & Chr(34))
             clsFreezeColumns.AddParameter("data_name", Chr(34) & grdCurrSheet.Name & Chr(34))
             clsUnfreezeColumns.AddParameter("data_name", Chr(34) & grdCurrSheet.Name & Chr(34))
+            clsGetDataFrame.AddParameter("data_name", Chr(34) & grdCurrSheet.Name & Chr(34))
         End If
     End Sub
 
@@ -605,7 +612,7 @@ Public Class frmEditor
     End Sub
 
     Private Sub grdCurrSheet_BeforeCellKeyDown(sender As Object, e As BeforeCellKeyDownEventArgs) Handles grdCurrSheet.BeforeCellKeyDown
-        If e.KeyCode = unvell.ReoGrid.Interaction.KeyCode.Delete Then
+        If e.KeyCode = unvell.ReoGrid.Interaction.KeyCode.Delete OrElse e.KeyCode = unvell.ReoGrid.Interaction.KeyCode.Back Then
             MsgBox("Deleting cells is currently disabled. This feature will be included in future versions." & vbNewLine & "To remove a cell's value, replace the value with NA.", MsgBoxStyle.Information, "Cannot delete cells.")
             e.IsCancelled = True
         End If
@@ -614,5 +621,15 @@ Public Class frmEditor
     Private Sub mnuConvert_Click(sender As Object, e As EventArgs) Handles mnuConvert.Click
         'TODO Selected column should automatically appear in dialog
         dlgConvertColumns.ShowDialog()
+    End Sub
+
+    Private Sub copyRangeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles copyRangeToolStripMenuItem.Click
+        grdData.CurrentWorksheet.Copy()
+    End Sub
+
+    Private Sub ViewSheet_Click(sender As Object, e As EventArgs) Handles ViewSheet.Click
+        clsViewDataFrame.AddParameter("x", clsRFunctionParameter:=clsGetDataFrame)
+        clsViewDataFrame.AddParameter("title", Chr(34) & grdCurrSheet.Name & Chr(34))
+        frmMain.clsRLink.RunScript(clsViewDataFrame.ToScript, strComment:="Right Click Menu: View R Data Frame")
     End Sub
 End Class

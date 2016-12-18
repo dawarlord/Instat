@@ -47,26 +47,26 @@ Partial Class dlgScatterPlot
         'lblFactorOptional
         '
         Me.lblFactorOptional.AutoSize = True
-        Me.lblFactorOptional.Location = New System.Drawing.Point(256, 203)
+        Me.lblFactorOptional.Location = New System.Drawing.Point(262, 219)
         Me.lblFactorOptional.Name = "lblFactorOptional"
-        Me.lblFactorOptional.Size = New System.Drawing.Size(108, 13)
+        Me.lblFactorOptional.Size = New System.Drawing.Size(111, 13)
         Me.lblFactorOptional.TabIndex = 4
-        Me.lblFactorOptional.Tag = "By_Variable_Optional"
-        Me.lblFactorOptional.Text = "By Variable (Optional)"
+        Me.lblFactorOptional.Tag = "By_Variable_Optional:"
+        Me.lblFactorOptional.Text = "By Variable (Optional):"
         '
         'lblXVariable
         '
         Me.lblXVariable.AutoSize = True
-        Me.lblXVariable.Location = New System.Drawing.Point(255, 156)
+        Me.lblXVariable.Location = New System.Drawing.Point(261, 172)
         Me.lblXVariable.Name = "lblXVariable"
-        Me.lblXVariable.Size = New System.Drawing.Size(64, 13)
+        Me.lblXVariable.Size = New System.Drawing.Size(58, 13)
         Me.lblXVariable.TabIndex = 2
-        Me.lblXVariable.Tag = "X_Variable"
-        Me.lblXVariable.Text = "X  - Variable"
+        Me.lblXVariable.Tag = "X_Variable:"
+        Me.lblXVariable.Text = "X Variable:"
         '
         'cmdScatterPlotOptions
         '
-        Me.cmdScatterPlotOptions.Location = New System.Drawing.Point(10, 201)
+        Me.cmdScatterPlotOptions.Location = New System.Drawing.Point(10, 205)
         Me.cmdScatterPlotOptions.Name = "cmdScatterPlotOptions"
         Me.cmdScatterPlotOptions.Size = New System.Drawing.Size(120, 25)
         Me.cmdScatterPlotOptions.TabIndex = 7
@@ -76,7 +76,7 @@ Partial Class dlgScatterPlot
         '
         'ucrFactorOptionalReceiver
         '
-        Me.ucrFactorOptionalReceiver.Location = New System.Drawing.Point(256, 218)
+        Me.ucrFactorOptionalReceiver.Location = New System.Drawing.Point(262, 234)
         Me.ucrFactorOptionalReceiver.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrFactorOptionalReceiver.Name = "ucrFactorOptionalReceiver"
         Me.ucrFactorOptionalReceiver.Selector = Nothing
@@ -85,7 +85,7 @@ Partial Class dlgScatterPlot
         '
         'ucrReceiverX
         '
-        Me.ucrReceiverX.Location = New System.Drawing.Point(256, 172)
+        Me.ucrReceiverX.Location = New System.Drawing.Point(262, 188)
         Me.ucrReceiverX.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverX.Name = "ucrReceiverX"
         Me.ucrReceiverX.Selector = Nothing
@@ -101,7 +101,7 @@ Partial Class dlgScatterPlot
         '
         'ucrVariablesAsFactorForScatter
         '
-        Me.ucrVariablesAsFactorForScatter.Location = New System.Drawing.Point(255, 11)
+        Me.ucrVariablesAsFactorForScatter.Location = New System.Drawing.Point(261, 27)
         Me.ucrVariablesAsFactorForScatter.Name = "ucrVariablesAsFactorForScatter"
         Me.ucrVariablesAsFactorForScatter.Size = New System.Drawing.Size(125, 136)
         Me.ucrVariablesAsFactorForScatter.TabIndex = 1
@@ -110,6 +110,7 @@ Partial Class dlgScatterPlot
         'ucrSelectorForScatter
         '
         Me.ucrSelectorForScatter.bShowHiddenColumns = False
+        Me.ucrSelectorForScatter.bUseCurrentFilter = True
         Me.ucrSelectorForScatter.Location = New System.Drawing.Point(10, 10)
         Me.ucrSelectorForScatter.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrSelectorForScatter.Name = "ucrSelectorForScatter"
@@ -139,6 +140,8 @@ Partial Class dlgScatterPlot
         Me.Controls.Add(Me.lblXVariable)
         Me.Controls.Add(Me.ucrBase)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "dlgScatterPlot"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Scatter Plot"

@@ -40,6 +40,9 @@ Public Class dlgTransformText
         ucrReceiverTransformText.Selector = ucrSelectorForTransformText
         ucrReceiverFirstWord.Selector = ucrSelectorForTransformText
         ucrReceiverLastWord.Selector = ucrSelectorForTransformText
+        ucrReceiverFirstWord.bUseFilteredData = False
+        ucrReceiverLastWord.bUseFilteredData = False
+        ucrReceiverTransformText.bUseFilteredData = False
         ucrReceiverTransformText.SetMeAsReceiver()
         ucrBase.clsRsyntax.bUseBaseFunction = True
         ucrInputTo.cboInput.Items.Add("Lower")
@@ -71,6 +74,7 @@ Public Class dlgTransformText
         rdoConvertCase.Checked = True
         ucrSelectorForTransformText.Reset()
         ucrSelectorForTransformText.Focus()
+        ucrReceiverTransformText.Focus()
         ucrInputPrefixForNewColumn.ResetText()
         ucrInputSeparator.ResetText()
         ucrInputPad.ResetText()
@@ -87,6 +91,13 @@ Public Class dlgTransformText
         ucrInputTo.SetName("Lower")
         ucrInputSeparator.SetName("Space")
         ucrInputPad.SetName("Space")
+        If (ucrSelectorForTransformText.ucrAvailableDataFrames.cboAvailableDataFrames.Text <> "") Then
+            ucrInputPrefixForNewColumn.SetName(ucrSelectorForTransformText.ucrAvailableDataFrames.cboAvailableDataFrames.Text & "_Transformed")
+        End If
+        nudFirstWord.Value = 1
+        nudLastWord.Value = 1
+        chkFirstWord.Checked = False
+        chkLastWord.Checked = False
     End Sub
 
     Private Sub TestOkEnabled()

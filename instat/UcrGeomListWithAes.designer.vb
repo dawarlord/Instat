@@ -19,7 +19,7 @@ Partial Class UcrGeomListWithParameters
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.UcrSelector = New instat.ucrSelectorByDataFrameAddRemove()
+        Me.ucrGeomWithAesSelector = New instat.ucrSelectorByDataFrameAddRemove()
         Me.lblAesList = New System.Windows.Forms.Label()
         Me.ucrReceiverParam1 = New instat.ucrReceiverSingle()
         Me.ucrReceiverParam2 = New instat.ucrReceiverSingle()
@@ -28,6 +28,7 @@ Partial Class UcrGeomListWithParameters
         Me.ucrReceiverParam5 = New instat.ucrReceiverSingle()
         Me.grpAesList = New System.Windows.Forms.GroupBox()
         Me.lblGgParam6 = New System.Windows.Forms.Label()
+        Me.lblGgParam10 = New System.Windows.Forms.Label()
         Me.lblGgParam9 = New System.Windows.Forms.Label()
         Me.lblGgParam8 = New System.Windows.Forms.Label()
         Me.lblGgParam7 = New System.Windows.Forms.Label()
@@ -36,6 +37,7 @@ Partial Class UcrGeomListWithParameters
         Me.lblGgParam3 = New System.Windows.Forms.Label()
         Me.lblGgParam2 = New System.Windows.Forms.Label()
         Me.lblGgParam1 = New System.Windows.Forms.Label()
+        Me.ucrReceiverParam10 = New instat.ucrReceiverSingle()
         Me.ucrReceiverParam9 = New instat.ucrReceiverSingle()
         Me.ucrReceiverParam8 = New instat.ucrReceiverSingle()
         Me.ucrReceiverParam7 = New instat.ucrReceiverSingle()
@@ -45,13 +47,15 @@ Partial Class UcrGeomListWithParameters
         Me.grpAesList.SuspendLayout()
         Me.SuspendLayout()
         '
-        'UcrSelector
+        'ucrGeomWithAesSelector
         '
-        Me.UcrSelector.Location = New System.Drawing.Point(3, 56)
-        Me.UcrSelector.Margin = New System.Windows.Forms.Padding(0)
-        Me.UcrSelector.Name = "UcrSelector"
-        Me.UcrSelector.Size = New System.Drawing.Size(232, 192)
-        Me.UcrSelector.TabIndex = 5
+        Me.ucrGeomWithAesSelector.bShowHiddenColumns = False
+        Me.ucrGeomWithAesSelector.bUseCurrentFilter = True
+        Me.ucrGeomWithAesSelector.Location = New System.Drawing.Point(3, 56)
+        Me.ucrGeomWithAesSelector.Margin = New System.Windows.Forms.Padding(0)
+        Me.ucrGeomWithAesSelector.Name = "ucrGeomWithAesSelector"
+        Me.ucrGeomWithAesSelector.Size = New System.Drawing.Size(232, 192)
+        Me.ucrGeomWithAesSelector.TabIndex = 5
         '
         'lblAesList
         '
@@ -63,7 +67,7 @@ Partial Class UcrGeomListWithParameters
         '
         'ucrReceiverParam1
         '
-        Me.ucrReceiverParam1.Location = New System.Drawing.Point(98, 25)
+        Me.ucrReceiverParam1.Location = New System.Drawing.Point(97, 25)
         Me.ucrReceiverParam1.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverParam1.Name = "ucrReceiverParam1"
         Me.ucrReceiverParam1.Selector = Nothing
@@ -72,7 +76,7 @@ Partial Class UcrGeomListWithParameters
         '
         'ucrReceiverParam2
         '
-        Me.ucrReceiverParam2.Location = New System.Drawing.Point(98, 53)
+        Me.ucrReceiverParam2.Location = New System.Drawing.Point(97, 51)
         Me.ucrReceiverParam2.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverParam2.Name = "ucrReceiverParam2"
         Me.ucrReceiverParam2.Selector = Nothing
@@ -81,7 +85,7 @@ Partial Class UcrGeomListWithParameters
         '
         'ucrReceiverParam3
         '
-        Me.ucrReceiverParam3.Location = New System.Drawing.Point(98, 81)
+        Me.ucrReceiverParam3.Location = New System.Drawing.Point(97, 77)
         Me.ucrReceiverParam3.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverParam3.Name = "ucrReceiverParam3"
         Me.ucrReceiverParam3.Selector = Nothing
@@ -90,7 +94,7 @@ Partial Class UcrGeomListWithParameters
         '
         'ucrReceiverParam4
         '
-        Me.ucrReceiverParam4.Location = New System.Drawing.Point(98, 109)
+        Me.ucrReceiverParam4.Location = New System.Drawing.Point(97, 103)
         Me.ucrReceiverParam4.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverParam4.Name = "ucrReceiverParam4"
         Me.ucrReceiverParam4.Selector = Nothing
@@ -99,7 +103,7 @@ Partial Class UcrGeomListWithParameters
         '
         'ucrReceiverParam5
         '
-        Me.ucrReceiverParam5.Location = New System.Drawing.Point(98, 137)
+        Me.ucrReceiverParam5.Location = New System.Drawing.Point(97, 129)
         Me.ucrReceiverParam5.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverParam5.Name = "ucrReceiverParam5"
         Me.ucrReceiverParam5.Selector = Nothing
@@ -109,6 +113,7 @@ Partial Class UcrGeomListWithParameters
         'grpAesList
         '
         Me.grpAesList.Controls.Add(Me.lblGgParam6)
+        Me.grpAesList.Controls.Add(Me.lblGgParam10)
         Me.grpAesList.Controls.Add(Me.lblGgParam9)
         Me.grpAesList.Controls.Add(Me.lblGgParam8)
         Me.grpAesList.Controls.Add(Me.lblGgParam7)
@@ -117,6 +122,7 @@ Partial Class UcrGeomListWithParameters
         Me.grpAesList.Controls.Add(Me.lblGgParam3)
         Me.grpAesList.Controls.Add(Me.lblGgParam2)
         Me.grpAesList.Controls.Add(Me.lblGgParam1)
+        Me.grpAesList.Controls.Add(Me.ucrReceiverParam10)
         Me.grpAesList.Controls.Add(Me.ucrReceiverParam9)
         Me.grpAesList.Controls.Add(Me.ucrReceiverParam8)
         Me.grpAesList.Controls.Add(Me.ucrReceiverParam1)
@@ -128,24 +134,33 @@ Partial Class UcrGeomListWithParameters
         Me.grpAesList.Controls.Add(Me.ucrReceiverParam2)
         Me.grpAesList.Location = New System.Drawing.Point(242, 19)
         Me.grpAesList.Name = "grpAesList"
-        Me.grpAesList.Size = New System.Drawing.Size(219, 264)
+        Me.grpAesList.Size = New System.Drawing.Size(219, 321)
         Me.grpAesList.TabIndex = 9
         Me.grpAesList.TabStop = False
-        Me.grpAesList.Text = "Geom Aesthetics"
+        Me.grpAesList.Text = "Geom Aesthetics:"
         '
         'lblGgParam6
         '
         Me.lblGgParam6.AutoSize = True
-        Me.lblGgParam6.Location = New System.Drawing.Point(7, 165)
+        Me.lblGgParam6.Location = New System.Drawing.Point(7, 159)
         Me.lblGgParam6.Name = "lblGgParam6"
         Me.lblGgParam6.Size = New System.Drawing.Size(29, 13)
         Me.lblGgParam6.TabIndex = 10
         Me.lblGgParam6.Text = "label"
         '
+        'lblGgParam10
+        '
+        Me.lblGgParam10.AutoSize = True
+        Me.lblGgParam10.Location = New System.Drawing.Point(7, 263)
+        Me.lblGgParam10.Name = "lblGgParam10"
+        Me.lblGgParam10.Size = New System.Drawing.Size(39, 13)
+        Me.lblGgParam10.TabIndex = 10
+        Me.lblGgParam10.Text = "Label2"
+        '
         'lblGgParam9
         '
         Me.lblGgParam9.AutoSize = True
-        Me.lblGgParam9.Location = New System.Drawing.Point(7, 241)
+        Me.lblGgParam9.Location = New System.Drawing.Point(7, 237)
         Me.lblGgParam9.Name = "lblGgParam9"
         Me.lblGgParam9.Size = New System.Drawing.Size(39, 13)
         Me.lblGgParam9.TabIndex = 10
@@ -154,7 +169,7 @@ Partial Class UcrGeomListWithParameters
         'lblGgParam8
         '
         Me.lblGgParam8.AutoSize = True
-        Me.lblGgParam8.Location = New System.Drawing.Point(6, 216)
+        Me.lblGgParam8.Location = New System.Drawing.Point(7, 211)
         Me.lblGgParam8.Name = "lblGgParam8"
         Me.lblGgParam8.Size = New System.Drawing.Size(39, 13)
         Me.lblGgParam8.TabIndex = 10
@@ -163,7 +178,7 @@ Partial Class UcrGeomListWithParameters
         'lblGgParam7
         '
         Me.lblGgParam7.AutoSize = True
-        Me.lblGgParam7.Location = New System.Drawing.Point(7, 193)
+        Me.lblGgParam7.Location = New System.Drawing.Point(7, 185)
         Me.lblGgParam7.Name = "lblGgParam7"
         Me.lblGgParam7.Size = New System.Drawing.Size(39, 13)
         Me.lblGgParam7.TabIndex = 10
@@ -172,7 +187,7 @@ Partial Class UcrGeomListWithParameters
         'lblGgParam5
         '
         Me.lblGgParam5.AutoSize = True
-        Me.lblGgParam5.Location = New System.Drawing.Point(7, 137)
+        Me.lblGgParam5.Location = New System.Drawing.Point(7, 133)
         Me.lblGgParam5.Name = "lblGgParam5"
         Me.lblGgParam5.Size = New System.Drawing.Size(39, 13)
         Me.lblGgParam5.TabIndex = 10
@@ -181,7 +196,7 @@ Partial Class UcrGeomListWithParameters
         'lblGgParam4
         '
         Me.lblGgParam4.AutoSize = True
-        Me.lblGgParam4.Location = New System.Drawing.Point(7, 109)
+        Me.lblGgParam4.Location = New System.Drawing.Point(7, 107)
         Me.lblGgParam4.Name = "lblGgParam4"
         Me.lblGgParam4.Size = New System.Drawing.Size(39, 13)
         Me.lblGgParam4.TabIndex = 10
@@ -199,7 +214,7 @@ Partial Class UcrGeomListWithParameters
         'lblGgParam2
         '
         Me.lblGgParam2.AutoSize = True
-        Me.lblGgParam2.Location = New System.Drawing.Point(7, 53)
+        Me.lblGgParam2.Location = New System.Drawing.Point(7, 55)
         Me.lblGgParam2.Name = "lblGgParam2"
         Me.lblGgParam2.Size = New System.Drawing.Size(39, 13)
         Me.lblGgParam2.TabIndex = 10
@@ -208,15 +223,24 @@ Partial Class UcrGeomListWithParameters
         'lblGgParam1
         '
         Me.lblGgParam1.AutoSize = True
-        Me.lblGgParam1.Location = New System.Drawing.Point(7, 25)
+        Me.lblGgParam1.Location = New System.Drawing.Point(7, 29)
         Me.lblGgParam1.Name = "lblGgParam1"
         Me.lblGgParam1.Size = New System.Drawing.Size(39, 13)
         Me.lblGgParam1.TabIndex = 9
         Me.lblGgParam1.Text = "Label1"
         '
+        'ucrReceiverParam10
+        '
+        Me.ucrReceiverParam10.Location = New System.Drawing.Point(97, 259)
+        Me.ucrReceiverParam10.Margin = New System.Windows.Forms.Padding(0)
+        Me.ucrReceiverParam10.Name = "ucrReceiverParam10"
+        Me.ucrReceiverParam10.Selector = Nothing
+        Me.ucrReceiverParam10.Size = New System.Drawing.Size(106, 26)
+        Me.ucrReceiverParam10.TabIndex = 8
+        '
         'ucrReceiverParam9
         '
-        Me.ucrReceiverParam9.Location = New System.Drawing.Point(98, 241)
+        Me.ucrReceiverParam9.Location = New System.Drawing.Point(97, 233)
         Me.ucrReceiverParam9.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverParam9.Name = "ucrReceiverParam9"
         Me.ucrReceiverParam9.Selector = Nothing
@@ -225,7 +249,7 @@ Partial Class UcrGeomListWithParameters
         '
         'ucrReceiverParam8
         '
-        Me.ucrReceiverParam8.Location = New System.Drawing.Point(97, 216)
+        Me.ucrReceiverParam8.Location = New System.Drawing.Point(97, 207)
         Me.ucrReceiverParam8.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverParam8.Name = "ucrReceiverParam8"
         Me.ucrReceiverParam8.Selector = Nothing
@@ -234,7 +258,7 @@ Partial Class UcrGeomListWithParameters
         '
         'ucrReceiverParam7
         '
-        Me.ucrReceiverParam7.Location = New System.Drawing.Point(98, 193)
+        Me.ucrReceiverParam7.Location = New System.Drawing.Point(97, 181)
         Me.ucrReceiverParam7.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverParam7.Name = "ucrReceiverParam7"
         Me.ucrReceiverParam7.Selector = Nothing
@@ -243,7 +267,7 @@ Partial Class UcrGeomListWithParameters
         '
         'ucrReceiverParam6
         '
-        Me.ucrReceiverParam6.Location = New System.Drawing.Point(98, 165)
+        Me.ucrReceiverParam6.Location = New System.Drawing.Point(97, 155)
         Me.ucrReceiverParam6.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverParam6.Name = "ucrReceiverParam6"
         Me.ucrReceiverParam6.Selector = Nothing
@@ -277,10 +301,10 @@ Partial Class UcrGeomListWithParameters
         Me.Controls.Add(Me.chkApplyOnAllLayers)
         Me.Controls.Add(Me.grpAesList)
         Me.Controls.Add(Me.lblAesList)
-        Me.Controls.Add(Me.UcrSelector)
+        Me.Controls.Add(Me.ucrGeomWithAesSelector)
         Me.Name = "UcrGeomListWithParameters"
-        Me.Size = New System.Drawing.Size(467, 286)
-        Me.Controls.SetChildIndex(Me.UcrSelector, 0)
+        Me.Size = New System.Drawing.Size(467, 343)
+        Me.Controls.SetChildIndex(Me.ucrGeomWithAesSelector, 0)
         Me.Controls.SetChildIndex(Me.lblAesList, 0)
         Me.Controls.SetChildIndex(Me.grpAesList, 0)
         Me.Controls.SetChildIndex(Me.chkApplyOnAllLayers, 0)
@@ -291,7 +315,7 @@ Partial Class UcrGeomListWithParameters
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents UcrSelector As ucrSelectorByDataFrameAddRemove
+    Friend WithEvents ucrGeomWithAesSelector As ucrSelectorByDataFrameAddRemove
     Friend WithEvents lblAesList As Label
     Friend WithEvents ucrReceiverParam1 As ucrReceiverSingle
     Friend WithEvents ucrReceiverParam2 As ucrReceiverSingle
@@ -314,4 +338,6 @@ Partial Class UcrGeomListWithParameters
     Friend WithEvents ucrReceiverParam8 As ucrReceiverSingle
     Friend WithEvents chkApplyOnAllLayers As CheckBox
     Friend WithEvents chkIgnoreGlobalAes As CheckBox
+    Friend WithEvents lblGgParam10 As Label
+    Friend WithEvents ucrReceiverParam10 As ucrReceiverSingle
 End Class

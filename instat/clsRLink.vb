@@ -92,7 +92,9 @@ Public Class RLink
 
         clsGetDataNames.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$get_data_names")
         chrDataFrameNames = RunInternalScriptGetValue(clsGetDataNames.ToScript()).AsCharacter
-        lstDataFrameNames.AddRange(chrDataFrameNames)
+        If chrDataFrameNames IsNot Nothing Then
+            lstDataFrameNames.AddRange(chrDataFrameNames)
+        End If
         Return lstDataFrameNames
     End Function
 
@@ -108,25 +110,53 @@ Public Class RLink
         Return lstCurrColumns
     End Function
 
-    Public Sub FillComboDataFrames(ByRef cboDataFrames As ComboBox, Optional bSetDefault As Boolean = True, Optional bIncludeOverall As Boolean = False)
-
+    Public Sub FillComboDataFrames(ByRef cboDataFrames As ComboBox, Optional bSetDefault As Boolean = True, Optional bIncludeOverall As Boolean = False, Optional strCurrentDataFrame As String = "")
+        'This sub is filling the cboDataFrames with the relevant dat frame names (obtained by using GetDataFrameNames()) and potentially "[Overall]".  On thing it is doing, is setting the selected index in the cboDataFrames.
+        'It is used on the ucrDataFrame in the FillComboBox sub.
         If bInstatObjectExists Then
-            cboDataFrames.Items.Clear()
             If bIncludeOverall Then
-                cboDataFrames.Items.Add("[Overall]")
+                cboDataFrames.Items.Add("[Overall]") 'Task/question: explain this.
             End If
             cboDataFrames.Items.AddRange(GetDataFrameNames().ToArray)
+            AdjustComboBoxWidth(cboDataFrames)
+            'Task/Question: From what I understood, if bSetDefault is true or if the strCurrentDataFrame (given as an argument) is actually not in cboDataFrames (is this case generic or should it never happen ?), then the selected Index should be the current worksheet.
+            If (bSetDefault OrElse cboDataFrames.Items.IndexOf(strCurrentDataFrame) = -1) AndAlso (frmEditor.grdData IsNot Nothing) AndAlso (frmEditor.grdData.CurrentWorksheet IsNot Nothing) Then
+                cboDataFrames.SelectedIndex = cboDataFrames.Items.IndexOf(frmEditor.grdData.CurrentWorksheet.Name)
+            ElseIf cboDataFrames.Items.IndexOf(strCurrentDataFrame) <> -1 Then
+                cboDataFrames.SelectedIndex = cboDataFrames.Items.IndexOf(strCurrentDataFrame)
+            End If
+        End If
+    End Sub
+
+    'TODO This is used above but will not be once ucrDataFrame uses proper controls
+    ' Then this can be removed
+    Public Shared Sub AdjustComboBoxWidth(cboCurrent As ComboBox)
+        Dim iWidth As Integer = cboCurrent.DropDownWidth
+        Dim graTemp As Graphics = cboCurrent.CreateGraphics()
+        Dim font As Font = cboCurrent.Font
+        Dim iScrollBarWidth As Integer
+        Dim iNewWidth As Integer
+
+        If cboCurrent.Items.Count > cboCurrent.MaxDropDownItems Then
+            iScrollBarWidth = SystemInformation.VerticalScrollBarWidth
+        Else
+            iScrollBarWidth = 0
         End If
 
-        If bSetDefault Then
-            cboDataFrames.SelectedIndex = cboDataFrames.Items.IndexOf(frmEditor.grdData.CurrentWorksheet.Name)
-        End If
+        For Each strItem As String In cboCurrent.Items
+            iNewWidth = CInt(graTemp.MeasureString(strItem, font).Width) + iScrollBarWidth
+            iWidth = Math.Max(iWidth, iNewWidth)
+        Next
+        cboCurrent.DropDownWidth = iWidth
     End Sub
 
     Public Sub FillColumnNames(strDataFrame As String, ByRef cboColumns As ComboBox)
         Dim lstCurrColumns As List(Of String)
-
-        lstCurrColumns = GetColumnNames(strDataFrame)
+        If strDataFrame <> "" AndAlso DataFrameExists(strDataFrame) Then
+            lstCurrColumns = GetColumnNames(strDataFrame)
+        Else
+            lstCurrColumns = New List(Of String)
+        End If
         cboColumns.Items.Clear()
         cboColumns.Items.AddRange(lstCurrColumns.ToArray)
     End Sub
@@ -161,7 +191,9 @@ Public Class RLink
         clsGetNextDefault.SetRCommand(strInstatDataObject & "$get_next_default_column_name")
         clsGetNextDefault.AddParameter("prefix", Chr(34) & strPrefix & Chr(34))
         clsGetNextDefault.AddParameter("data_name", Chr(34) & strDataFrameName & Chr(34))
-        strNextDefault = RunInternalScriptGetValue(clsGetNextDefault.ToScript()).AsCharacter(0)
+        If strDataFrameName <> "" AndAlso DataFrameExists(strDataFrameName) Then
+            strNextDefault = RunInternalScriptGetValue(clsGetNextDefault.ToScript()).AsCharacter(0)
+        End If
         Return strNextDefault
     End Function
 
@@ -192,6 +224,7 @@ Public Class RLink
         Dim strScriptWithComment As String
         Dim strSplitScript As String
         strOutput = ""
+
         If strComment <> "" Then
             strComment = "# " & strComment
             strScriptWithComment = strComment & vbCrLf & strScript
@@ -208,13 +241,13 @@ Public Class RLink
             AppendText(txtOutput, clrScript, fScript, strScript & vbCrLf)
         End If
 
-        If strScript.Length > 2000 Then
-            MsgBox("The following command cannot be run because it exceeds the character limit of 2000 characters for a command in R-Instat." & vbNewLine & strScript & vbNewLine & vbNewLine & "It may be possible to run the command directly in R.", MsgBoxStyle.Critical, "Cannot run command")
-        ElseIf bReturnOutput = 0 Then
+        'If strScript.Length > 2000 Then
+        '    MsgBox("The following command cannot be run because it exceeds the character limit of 2000 characters for a command in R-Instat." & vbNewLine & strScript & vbNewLine & vbNewLine & "It may be possible to run the command directly in R.", MsgBoxStyle.Critical, "Cannot run command")
+        If bReturnOutput = 0 Then
             Try
                 clsEngine.Evaluate(strScript)
             Catch e As Exception
-                MsgBox("Error occurred in attempting to run:" & vbNewLine & strScript & vbNewLine & vbNewLine & "With error message:" & vbNewLine & e.Message & vbNewLine & vbNewLine, MsgBoxStyle.Critical, "Error running R code")
+                MsgBox(e.Message & vbNewLine & "The error occurred in attempting to run the following R command(s):" & vbNewLine & strScript, MsgBoxStyle.Critical, "Error running R command(s)")
             End Try
         ElseIf bReturnOutput = 1 Then
             Try
@@ -222,7 +255,7 @@ Public Class RLink
                 strTemp = String.Join(vbCrLf, temp.AsCharacter())
                 strOutput = strOutput & strTemp & vbCrLf
             Catch e As Exception
-                MsgBox("Error occurred in attempting to run:" & vbNewLine & strScript & vbNewLine & vbNewLine & "With error message:" & vbNewLine & e.Message & vbNewLine & vbNewLine, MsgBoxStyle.Critical, "Error running R code")
+                MsgBox(e.Message & vbNewLine & "The error occurred in attempting to run the following R command(s):" & vbNewLine & strScript, MsgBoxStyle.Critical, "Error running R command(s)")
             End Try
         Else
             If strScript.Trim(vbCrLf).LastIndexOf(vbCrLf) = -1 Then
@@ -233,7 +266,7 @@ Public Class RLink
                     Try
                         clsEngine.Evaluate(strSplitScript)
                     Catch e As Exception
-                        MsgBox("Error occurred in attempting to run:" & vbNewLine & strSplitScript & vbNewLine & vbNewLine & "With error message:" & vbNewLine & e.Message & vbNewLine & vbNewLine, MsgBoxStyle.Critical, "Error running R code")
+                        MsgBox(e.Message & vbNewLine & "The error occurred in attempting to run the following R command(s):" & vbNewLine & strScript, MsgBoxStyle.Critical, "Error running R command(s)")
                     End Try
                 End If
                 strSplitScript = Right(strScript, strScript.Length - strScript.Trim(vbCrLf).LastIndexOf(vbCrLf) - 2)
@@ -244,7 +277,7 @@ Public Class RLink
                 strTemp = String.Join(vbCrLf, temp.AsCharacter())
                 strOutput = strOutput & strTemp & vbCrLf
             Catch e As Exception
-                MsgBox("Error occurred in attempting to run:" & vbNewLine & strCapturedScript & vbNewLine & vbNewLine & "With error message:" & vbNewLine & e.Message & vbNewLine & vbNewLine, MsgBoxStyle.Critical, "Error running R code")
+                MsgBox(e.Message & vbNewLine & "The error occurred in attempting to run the following R command(s):" & vbNewLine & strScript, MsgBoxStyle.Critical, "Error running R command(s)")
             End Try
         End If
         If bOutput Then
@@ -282,9 +315,9 @@ Public Class RLink
 
         expTemp = Nothing
         strCommand = strVariableName & "<-" & strScript
-        If strCommand.Length > 2000 Then
-            MsgBox("The following command cannot be run because it exceeds the character limit of 2000 characters for a command in R-Instat." & vbNewLine & strScript & vbNewLine & vbNewLine & "It may be possible to run the command directly in R.", MsgBoxStyle.Critical, "Cannot run command")
-        ElseIf clsEngine IsNot Nothing Then
+        'If strCommand.Length > 2000 Then
+        'MsgBox("The following command cannot be run because it exceeds the character limit of 2000 characters for a command in R-Instat." & vbNewLine & strScript & vbNewLine & vbNewLine & "It may be possible to run the command directly in R.", MsgBoxStyle.Critical, "Cannot run command")
+        If clsEngine IsNot Nothing Then
             Try
                 'iRemaining = strScript.Length
                 'iStartPoint = 1000
@@ -298,7 +331,7 @@ Public Class RLink
                 expTemp = clsEngine.GetSymbol(strVariableName)
             Catch ex As Exception
                 If Not bSilent Then
-                    MsgBox("Error occurred in attempting to run:" & vbNewLine & strScript & vbNewLine & vbNewLine & "With error message:" & vbNewLine & ex.Message & vbNewLine & vbNewLine, MsgBoxStyle.Critical, "Error running R code")
+                    MsgBox(ex.Message & vbNewLine & "The error occurred in attempting to run the following R command(s):" & vbNewLine & strScript, MsgBoxStyle.Critical, "Error running R command(s)")
                 End If
             End Try
         End If
@@ -309,12 +342,12 @@ Public Class RLink
         Dim chrTemp As CharacterVector
         Dim expTemp As SymbolicExpression
 
-        expTemp = RunInternalScriptGetValue("capture.output(" & strScript & ")", bSilent = bSilent)
+        expTemp = RunInternalScriptGetValue("capture.output(" & strScript & ")", bSilent:=bSilent)
         Try
             chrTemp = expTemp.AsCharacter()
         Catch ex As Exception
             If Not bSilent Then
-                MsgBox("Error occurred in attempting to run:" & vbNewLine & strScript & vbNewLine & vbNewLine & "With error message:" & vbNewLine & ex.Message & vbNewLine & vbNewLine, MsgBoxStyle.Critical, "Error running R code")
+                MsgBox(ex.Message & vbNewLine & "The error occurred in attempting to run the following R command(s):" & vbNewLine & strScript, MsgBoxStyle.Critical, "Error running R command(s)")
             End If
             chrTemp = Nothing
         End Try
@@ -327,31 +360,31 @@ Public Class RLink
         Dim strCommand As String
 
         strCommand = strVariableName & "<-" & strScript
-        If strCommand.Length > 2000 Then
-            MsgBox("The following command cannot be run because it exceeds the character limit of 2000 characters for a command in R-Instat." & vbNewLine & strScript & vbNewLine & vbNewLine & "It may be possible to run the command directly in R.", MsgBoxStyle.Critical, "Cannot run command")
-            Return False
-        ElseIf clsEngine IsNot Nothing Then
+        'If strCommand.Length > 2000 Then
+        '    MsgBox("The following command cannot be run because it exceeds the character limit of 2000 characters for a command in R-Instat." & vbNewLine & strScript & vbNewLine & vbNewLine & "It may be possible to run the command directly in R.", MsgBoxStyle.Critical, "Cannot run command")
+        '    Return False
+        If clsEngine IsNot Nothing Then
             Try
-                    'iRemaining = strScript.Length
-                    'While iRemaining > 1000
-                    '    iSplitIndex = strScript.Substring(1000).IndexOf(",")
-                    '    iRemaining = strScript.Length - iSplitIndex
-                    '    strScript = strScript.Insert(iSplitIndex + 1, vbNewLine)
-                    'End While
-                    If strVariableName <> "" Then
-                        clsEngine.Evaluate(strVariableName & "<-" & strScript)
-                    Else
-                        clsEngine.Evaluate(strScript)
-                    End If
-                    Return True
-                Catch ex As Exception
-                    If Not bSilent Then
-                    MsgBox("Error occurred in attempting to run:" & vbNewLine & strScript & vbNewLine & vbNewLine & "With error message:" & vbNewLine & ex.Message & vbNewLine & vbNewLine, MsgBoxStyle.Critical, "Error running R code")
+                'iRemaining = strScript.Length
+                'While iRemaining > 1000
+                '    iSplitIndex = strScript.Substring(1000).IndexOf(",")
+                '    iRemaining = strScript.Length - iSplitIndex
+                '    strScript = strScript.Insert(iSplitIndex + 1, vbNewLine)
+                'End While
+                If strVariableName <> "" Then
+                    clsEngine.Evaluate(strVariableName & "<-" & strScript)
+                Else
+                    clsEngine.Evaluate(strScript)
                 End If
-                    Return False
-                End Try
-            Else
+                Return True
+            Catch ex As Exception
+                If Not bSilent Then
+                    MsgBox(ex.Message & vbNewLine & "The error occurred in attempting to run the following R command(s):" & vbNewLine & strScript, MsgBoxStyle.Critical, "Error running R command(s)")
+                End If
                 Return False
+            End Try
+        Else
+            Return False
         End If
     End Function
 
@@ -393,6 +426,7 @@ Public Class RLink
         frmSetupLoading.Show()
         RunScript("setwd('" & frmMain.strStaticPath.Replace("\", "/") & strInstatObjectPath & "')") 'This is bad the wd should be flexible and not automatically set to the instat object directory 
         RunScript("source(" & Chr(34) & "Rsetup.R" & Chr(34) & ")")
+        CreateNewInstatObject()
         frmSetupLoading.Close()
         frmMain.Cursor = Cursors.Default
     End Sub
@@ -440,7 +474,7 @@ Public Class RLink
                     clsIncludeList.AddParameter(kvpInclude.Key, GetListAsRString(kvpInclude.Value.ToList(), bWithQuotes:=False))
                 Next
                 clsGetItems.AddParameter("include", clsRFunctionParameter:=clsIncludeList)
-                End If
+            End If
             If lstExcludedDataTypes.Count > 0 Then
                 clsExcludeList.SetRCommand("list")
                 For Each kvpExclude In lstExcludedDataTypes
@@ -456,25 +490,25 @@ Public Class RLink
             End If
             vecColumns = RunInternalScriptGetValue(clsGetItems.ToScript()).AsList
 
-                For i = 0 To vecColumns.Count - 1
-                    If vecColumns.Count > 1 Then
-                        grps = New ListViewGroup(key:=vecColumns.Names(i), headerText:=vecColumns.Names(i))
-                        lstView.Groups.Add(grps)
-                    End If
-                    chrCurrColumns = vecColumns(i).AsCharacter
-                    If chrCurrColumns IsNot Nothing Then
-                        For j = 0 To chrCurrColumns.Count - 1
-                            lstView.Items.Add(chrCurrColumns(j))
-                            lstView.Items(j).Tag = vecColumns.Names(i)
-                            If vecColumns.Count > 1 Then
-                                lstView.Items(j).Group = lstView.Groups(i)
-                            End If
-                        Next
-                    End If
-                Next
-                'TODO Find out how to get this to set automatically ( Width = -2 almost works)
-                lstView.Columns(0).Width = lstView.Width - 25
-            End If
+            For i = 0 To vecColumns.Count - 1
+                If vecColumns.Count > 1 Then
+                    grps = New ListViewGroup(key:=vecColumns.Names(i), headerText:=vecColumns.Names(i))
+                    lstView.Groups.Add(grps)
+                End If
+                chrCurrColumns = vecColumns(i).AsCharacter
+                If chrCurrColumns IsNot Nothing Then
+                    For j = 0 To chrCurrColumns.Count - 1
+                        lstView.Items.Add(chrCurrColumns(j))
+                        lstView.Items(j).Tag = vecColumns.Names(i)
+                        If vecColumns.Count > 1 Then
+                            lstView.Items(j).Group = lstView.Groups(i)
+                        End If
+                    Next
+                End If
+            Next
+            'TODO Find out how to get this to set automatically ( Width = -2 almost works)
+            lstView.Columns(0).Width = lstView.Width - 25
+        End If
     End Sub
 
     Public Sub SelectColumnsWithMetadataProperty(ucrCurrentReceiver As ucrReceiverMultiple, strDataFrameName As String, strProperty As String, strValues As String())
@@ -579,7 +613,7 @@ Public Class RLink
             clsGetModelNames.AddParameter("data_name", Chr(34) & strDataFrameName & Chr(34))
         End If
         expModelNames = RunInternalScriptGetValue(clsGetModelNames.ToScript(), bSilent:=True)
-        If Not expModelNames.Type = Internals.SymbolicExpressionType.Null Then
+        If expModelNames IsNot Nothing AndAlso (Not expModelNames.Type = Internals.SymbolicExpressionType.Null) Then
             chrModelNames = expModelNames.AsCharacter()
             If chrModelNames.Length > 0 Then
                 lstModelNames.AddRange(chrModelNames)
@@ -637,4 +671,13 @@ Public Class RLink
         Return strDataType
     End Function
 
+    Public Function MakeValidText(strText As String) As String
+        Dim strOut As String
+        Dim clsMakeNames As New RFunction
+
+        clsMakeNames.SetRCommand("make.names")
+        clsMakeNames.AddParameter("names", Chr(34) & strText & Chr(34))
+        strOut = RunInternalScriptGetValue(clsMakeNames.ToScript()).AsCharacter(0)
+        Return strOut
+    End Function
 End Class

@@ -14,6 +14,7 @@
 ' You should have received a copy of the GNU General Public License k
 ' along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+Imports instat
 Imports instat.Translations
 Public Class ucrReceiver
     Public WithEvents Selector As ucrSelector
@@ -132,6 +133,8 @@ Public Class ucrReceiver
 
     Public Sub OnValueChanged(ByVal sender As Object, ByVal e As EventArgs)
         RaiseEvent ValueChanged(sender, e)
+        OnControlContentsChanged()
+        OnControlValueChanged()
     End Sub
 
     'TODO remove this method and replace with SetIncludedDataTypes
@@ -143,6 +146,7 @@ Public Class ucrReceiver
         Dim strTypes(strInclude.Count - 1) As String
 
         Array.Copy(strInclude, strTypes, strInclude.Length)
+        'If the two previous lines where not added, the modification of value performed on strTypes was immediately performed on strInclude, then the argument passed into the function such as clsCurrGeom.clsAesParameters(i).strIncludedDataTypes in ucrGeomListWithAes.SetParameters would have been edited (i.e. quotes would have been added to the types names in the strIncludedDataTypes of the i'th AesParameter of the current Geom...), which we don't want !
         For i = 0 To strInclude.Count - 1
             strTypes(i) = Chr(34) & strInclude(i) & Chr(34)
         Next
@@ -150,17 +154,27 @@ Public Class ucrReceiver
     End Sub
 
     Public Sub SetExcludedDataTypes(strExclude As String())
+        Dim strTypes(strExclude.Count - 1) As String
+
+        Array.Copy(strExclude, strTypes, strExclude.Length)
+        'If the two previous lines where not added, the modification of value performed on strTypes was immediately performed on strInclude, then the argument passed into the function such as clsCurrGeom.clsAesParameters(i).strExcludedDataTypes in ucrGeomListWithAes.SetParameters would have been edited (i.e. quotes would have been added to the types names in the strExcludedDataTypes of the i'th AesParameter of the current Geom...), which we don't want !
         For i = 0 To strExclude.Count - 1
-            strExclude(i) = Chr(34) & strExclude(i) & Chr(34)
+            strTypes(i) = Chr(34) & strTypes(i) & Chr(34)
         Next
-        AddExcludedMetadataProperty("class", strExclude)
+        AddExcludedMetadataProperty("class", strTypes)
     End Sub
 
     Public Sub AddIncludedMetadataProperty(strProperty As String, strInclude As String())
         Dim iIncludeIndex As Integer
         'Dim iExcludeIndex As Integer
         Dim kvpIncludeProperty As KeyValuePair(Of String, String())
-
+        If strProperty = "class" AndAlso strInclude.Contains(Chr(34) & "factor" & Chr(34)) Then
+            Array.Resize(strInclude, strInclude.Length + 1)
+            ' WARNING: This is dependent on the way the metadata is displayed by the Instat object
+            ' If this changes in Instat object, ordered factors will not be displayed
+            ' TODO: Make this solid - should somehow use is.factor() in R
+            strInclude(strInclude.Length - 1) = Chr(34) & "ordered,factor" & Chr(34)
+        End If
         kvpIncludeProperty = New KeyValuePair(Of String, String())(strProperty, strInclude)
         iIncludeIndex = lstIncludedMetadataProperties.FindIndex(Function(x) x.Key = strProperty)
         If iIncludeIndex <> -1 Then
@@ -194,12 +208,29 @@ Public Class ucrReceiver
 
     End Sub
 
+    Public Sub RemoveExcludedMetadataProperty(strProperty As String)
+        Dim iIncludeIndex As Integer
+
+        iIncludeIndex = lstExcludedMetadataProperties.FindIndex(Function(x) x.Key = strProperty)
+        If iIncludeIndex <> -1 Then
+            lstExcludedMetadataProperties.RemoveAt(iIncludeIndex)
+        End If
+        If Selector IsNot Nothing Then
+            Selector.LoadList()
+        End If
+    End Sub
     Public Sub AddExcludedMetadataProperty(strProperty As String, strExclude As String())
         'Dim iIncludeIndex As Integer
         Dim iExcludeIndex As Integer
 
         Dim kvpExcludeProperty As KeyValuePair(Of String, String())
-
+        If strProperty = "class" AndAlso strExclude.Contains(Chr(34) & "factor" & Chr(34)) Then
+            Array.Resize(strExclude, strExclude.Length + 1)
+            ' WARNING: This is dependent on the way the metadata is displayed by the Instat object
+            ' If this changes in Instat object, ordered factors will not be displayed
+            ' TODO: Make this solid - should somehow use is.factor() in R
+            strExclude(strExclude.Length - 1) = Chr(34) & "ordered,factor" & Chr(34)
+        End If
         kvpExcludeProperty = New KeyValuePair(Of String, String())(strProperty, strExclude)
         iExcludeIndex = lstExcludedMetadataProperties.FindIndex(Function(x) x.Key = strProperty)
         If iExcludeIndex <> -1 Then
@@ -261,5 +292,15 @@ Public Class ucrReceiver
         Dim sender As New Object
         Dim e As New EventArgs
         RaiseEvent SelectionChanged(sender, e)
+        OnControlContentsChanged()
+        OnControlValueChanged()
+    End Sub
+
+    Public Overrides Sub UpdateControl(clsRCodeObject As RCodeStructure)
+        MyBase.UpdateControl(clsRCodeObject)
+    End Sub
+
+    Public Overrides Sub UpdateRCode(Optional clsRFunction As RFunction = Nothing, Optional clsROperator As ROperator = Nothing)
+        MyBase.UpdateRCode(clsRFunction, clsROperator)
     End Sub
 End Class

@@ -18,10 +18,12 @@ Public Class dlgGeneralForGraphics
     Public clsRggplotFunction As New RFunction
     Private bFirstLoad As Boolean = True
     Private lstLayerComplete As New List(Of Boolean)
+    'list of completed layers.
     Private iLayerIndex As Integer
+    'current layer
     Public WithEvents clsGgplotAesFunction As New RFunction
-    Private strGlobalDataFrame As String = ""
-    Public bDataFrameSet As Boolean = False
+    Private strGlobalDataFrame As String
+    Public bDataFrameSet As Boolean
 
     Private Sub dlgGeneralForGraphics_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If bFirstLoad Then
@@ -41,13 +43,17 @@ Public Class dlgGeneralForGraphics
         clsRggplotFunction.SetRCommand("ggplot")
         clsGgplotAesFunction.SetRCommand("aes")
         ucrBase.clsRsyntax.SetOperatorParameter(True, clsRFunc:=clsRggplotFunction)
+        'True for "we are setting the first parameter, on the left of +".
         ucrBase.iHelpTopicID = 356
 
-        ucrSaveGraph.SetDataFrameSelector(sdgLayerOptions.ucrGeomWithAes.UcrSelector.ucrAvailableDataFrames)
+        ucrSaveGraph.SetDataFrameSelector(sdgLayerOptions.ucrGeomWithAes.ucrGeomWithAesSelector.ucrAvailableDataFrames)
         ucrSaveGraph.strPrefix = "Graph"
         ucrAdditionalLayers.SetRSyntax(ucrBase.clsRsyntax)
         ucrAdditionalLayers.SetGGplotFunction(clsRggplotFunction)
         ucrAdditionalLayers.SetAesFunction(clsGgplotAesFunction)
+        ucrBase.clsRsyntax.bExcludeAssignedFunctionOutput = False
+        'By default, we want to put in the script the output of our Base R-command (in this case the ...+...+...) even when it has been assigned to some object (in which case we want the name of that object in the script so that it's called when the script is run).
+        'For example, when a graph is saved, it is assigned to it's place in an R-instat object. If we had set bExcludeAssignedFunctionOutput to True, then we would never print the graph when running the script.
 
     End Sub
 
@@ -57,12 +63,15 @@ Public Class dlgGeneralForGraphics
         lstLayerComplete.Clear()
         'SetEditDeleteEnabled()
         strGlobalDataFrame = ""
+        bDataFrameSet = False
         clsRggplotFunction.ClearParameters()
         clsGgplotAesFunction.ClearParameters()
         ucrAdditionalLayers.Reset()
         If ucrBase.clsRsyntax.clsBaseOperator IsNot Nothing Then
             ucrBase.clsRsyntax.clsBaseOperator.RemoveAllAdditionalParameters()
         End If
+        sdgPlots.Reset()
+        'Warning/to be discussed: sdgPlots doesn't work like sdgLayerOptions. Information actually stays on the dialogue, as it cannot be editted on the general for graphics (yet) I think that sdgPlots should work like LayerOptions and be filled in at load, thanks to a setup function and setsettings sub. 
         TestOKEnabled()
     End Sub
 
@@ -75,7 +84,7 @@ Public Class dlgGeneralForGraphics
     End Sub
 
     'Private Sub cmdAdd_Click(sender As Object, e As EventArgs)
-    '    sdgLayerOptions.SetupLayer(clsTempGgPlot:=clsRggplotFunction, clsTempGeomFunc:=Nothing, clsTempAesFunc:=clsGgplotAesFunction, bFixAes:=False, bFixGeom:=False, strDataframe:=strGlobalDataFrame, bUseGlobalAes:=lstLayers.Items.Count = 0)
+    '    sdgLayerOptions.SetupLayer(clsTempGgPlot:=clsRggplotFunction, clsTempGeomFunc:=Nothing, clsTempAesFunc:=clsGgplotAesFunction, bFixAes:=False, bFixGeom:=False, strDataframe:=strGlobalDataFrame, bApplyAesGlobally:=lstLayers.Items.Count = 0, bIgnoreGlobalAes:=False)
     '    sdgLayerOptions.ShowDialog()
     '    strGlobalDataFrame = sdgLayerOptions.strGlobalDataFrame
     '    AddLayers()
@@ -149,18 +158,32 @@ Public Class dlgGeneralForGraphics
     '    Else
     '        clsLocalAes = Nothing
     '    End If
-    '    sdgLayerOptions.SetupLayer(clsTempGgPlot:=clsRggplotFunction, clsTempGeomFunc:=clsSelectedGeom, clsTempAesFunc:=clsGgplotAesFunction, bFixAes:=False, bFixGeom:=True, strDataframe:=strGlobalDataFrame, bUseGlobalAes:=False, clsTempLocalAes:=clsLocalAes)
+    '    sdgLayerOptions.SetupLayer(clsTempGgPlot:=clsRggplotFunction, clsTempGeomFunc:=clsSelectedGeom, clsTempAesFunc:=clsGgplotAesFunction, bFixAes:=False, bFixGeom:=True, strDataframe:=strGlobalDataFrame, bApplyAesGlobally:=False, bIgnoreGlobalAes:=False, clsTempLocalAes:=clsLocalAes)
     '    sdgLayerOptions.ShowDialog()
     '    AddLayers(lstLayers.SelectedItems(0))
     'End Sub
 
     Private Sub ucrSaveGraph_GraphNameChanged() Handles ucrSaveGraph.GraphNameChanged, ucrSaveGraph.SaveGraphCheckedChanged
         If ucrSaveGraph.bSaveGraph Then
-            ucrBase.clsRsyntax.SetAssignTo(ucrSaveGraph.strGraphName, strTempDataframe:=sdgLayerOptions.ucrGeomWithAes.UcrSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, strTempGraph:=ucrSaveGraph.strGraphName)
-            ucrBase.clsRsyntax.bExcludeAssignedFunctionOutput = True
+            ucrBase.clsRsyntax.SetAssignTo(ucrSaveGraph.strGraphName, strTempDataframe:=sdgLayerOptions.ucrGeomWithAes.ucrGeomWithAesSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, strTempGraph:=ucrSaveGraph.strGraphName)
         Else
-            ucrBase.clsRsyntax.SetAssignTo("last_graph", strTempDataframe:=sdgLayerOptions.ucrGeomWithAes.UcrSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, strTempGraph:="last_graph")
-            ucrBase.clsRsyntax.bExcludeAssignedFunctionOutput = False
+            ucrBase.clsRsyntax.SetAssignTo("last_graph", strTempDataframe:=sdgLayerOptions.ucrGeomWithAes.ucrGeomWithAesSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, strTempGraph:="last_graph")
         End If
+    End Sub
+
+    Private Sub SetupPlotOptions() 'Warning to be discussed: I m hoping to have a Setup function in sdgPlots itself... ?
+        sdgPlots.SetRSyntax(ucrBase.clsRsyntax)
+        sdgPlots.SetGgplotFunction(clsRggplotFunction)
+    End Sub
+    Private Sub cmdOptions_Click(sender As Object, e As EventArgs) Handles cmdOptions.Click
+        sdgPlots.DisableLayersTab()
+        SetupPlotOptions()
+        sdgPlots.ShowDialog()
+        sdgPlots.EnableLayersTab()
+    End Sub
+
+    Private Sub ucrAdditionalLayers_NumberOfLayersChanged() Handles ucrAdditionalLayers.NumberOfLayersChanged
+        'When the number of Layers in the lstLayers on ucrAdditionalLayers need to check if OK is enabled on dlgGeneralForGraphics.
+        TestOKEnabled()
     End Sub
 End Class

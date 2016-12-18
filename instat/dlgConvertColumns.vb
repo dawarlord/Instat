@@ -86,37 +86,32 @@ Public Class dlgConvertColumns
         If rdoFactor.Checked Then
             grpFactorToNumericOptions.Visible = False
             ucrBase.clsRsyntax.AddParameter("to_type", Chr(34) & "factor" & Chr(34))
-            TestOKEnabled()
-
         ElseIf rdoNumeric.Checked Then
             grpFactorToNumericOptions.Visible = True
             ucrBase.clsRsyntax.AddParameter("to_type", Chr(34) & "numeric" & Chr(34))
-            TestOKEnabled()
         ElseIf rdoCharacter.Checked Then
             grpFactorToNumericOptions.Visible = False
             ucrBase.clsRsyntax.AddParameter("to_type", Chr(34) & "character" & Chr(34))
-            TestOKEnabled()
         ElseIf rdoInteger.Checked Then
             grpFactorToNumericOptions.Visible = False
             ucrBase.clsRsyntax.AddParameter("to_type", Chr(34) & "integer" & Chr(34))
-            TestOKEnabled()
+        ElseIf rdoOrderedFactor.Checked Then
+            ucrBase.clsRsyntax.AddParameter("to_type", Chr(34) & "ordered_factor" & Chr(34))
         Else
+            'the else case should never happen but is there just in case
             ucrBase.clsRsyntax.RemoveParameter("to_type")
             grpFactorToNumericOptions.Visible = False
-
-            'the else case should never happen but is there just in case
         End If
+        TestOKEnabled()
     End Sub
 
     Private Sub ucrBase_ClickReset(sender As Object, e As EventArgs) Handles ucrBase.ClickReset
         SetDefaults()
         TestOKEnabled()
-
     End Sub
 
-
     Private Sub TestOKEnabled()
-        If ucrReceiverColumnsToConvert.IsEmpty() = False And (rdoFactor.Checked = True Or rdoNumeric.Checked = True Or rdoCharacter.Checked = True Or rdoInteger.Checked = True) Then
+        If Not ucrReceiverColumnsToConvert.IsEmpty() AndAlso (rdoFactor.Checked OrElse rdoNumeric.Checked OrElse rdoCharacter.Checked OrElse rdoInteger.Checked OrElse rdoOrderedFactor.Checked) Then
             ucrBase.OKEnabled(True)
         Else
             ucrBase.OKEnabled(False)
@@ -126,8 +121,6 @@ Public Class dlgConvertColumns
         If rdoConvertLevels.Checked = True Then
             If frmMain.clsInstatOptions.bIncludeRDefaultParameters Then
                 ucrBase.clsRsyntax.AddParameter("factor_numeric", Chr(34) & "by_levels" & Chr(34))
-
-
             Else
                 ucrBase.clsRsyntax.RemoveParameter("factor_numeric")
             End If

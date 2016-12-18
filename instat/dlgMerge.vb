@@ -19,6 +19,11 @@ Public Class dlgMerge
     Private bFirstLoad As Boolean = True
     Private clsByList As New RFunction
 
+    ' This dialog has a bug when using numeric and integer columns as the joining columns.
+    ' Issue reported here: https://github.com/hadley/dplyr/issues/2164
+    ' The current fix we suggest is to first convert integer joining columns to numeric columns.
+    ' Alternatives would be to use the much slower base merge 
+    ' or plyr::join which cannot handle joining columns with different names
     Private Sub dlgMerge_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         autoTranslate(Me)
 
@@ -26,8 +31,6 @@ Public Class dlgMerge
             InitialiseDialog()
             SetDefaults()
             bFirstLoad = False
-        Else
-            ReopenDialog()
         End If
         TestOKEnabled()
     End Sub
@@ -35,81 +38,65 @@ Public Class dlgMerge
     Private Sub InitialiseDialog()
         ucrBase.iHelpTopicID = 60
         ucrNewDataFrameName.SetValidationTypeAsRVariable()
-        cmdAddAnotherPair.Enabled = False
-        ucrReceiverFirstDF.Selector = ucrSelectorFirstDataFrame
-        ucrReceiverSecondDF.Selector = ucrSelectorSecondDataFrame
+        sdgMerge.SetRSyntax(ucrBase.clsRsyntax)
+        ucrReceiverFirstDF.Selector = ucrSelectorFirstDF
+        ucrReceiverSecondDF.Selector = ucrSelectorSecondDF
+        ' Ideally this is what we want but the functionality of the selectors/receivers doesn't allow for this yet
+        ' The list should be set up so that errors and not possible with the by argument
+        'ucrReceiverFirstDF.bExcludeFromSelector = True
+        'ucrReceiverSecondDF.bExcludeFromSelector = True
+        ucrReceiverFirstDF.SetMeAsReceiver()
+        ucrReceiverSecondDF.SetMeAsReceiver()
         clsByList.SetRCommand("c")
-        ucrBase.clsRsyntax.AddParameter("by", clsRFunctionParameter:=clsByList)
-        ucrReceiverFirstDF.bExcludeFromSelector = True
-        ucrReceiverSecondDF.bExcludeFromSelector = True
     End Sub
 
     Private Sub SetDefaults()
         ucrNewDataFrameName.Reset()
-        ucrSelectorFirstDataFrame.Reset()
-        ucrSelectorSecondDataFrame.Reset()
-        ucrReceiverFirstDF.SetMeAsReceiver()
-        ucrReceiverSecondDF.SetMeAsReceiver()
-        rdoLeftJoin.Checked = True
-        rdoChooseMergeColumns.Checked = True
-    End Sub
-
-    Private Sub ReopenDialog()
-
+        ucrSelectorFirstDF.Reset()
+        ucrSelectorSecondDF.Reset()
+        sdgMerge.SetDefaults()
+        rdoByAllMatching.Checked = True
     End Sub
 
     Private Sub TestOKEnabled()
-        Dim bAllowOk As Boolean
-
-        bAllowOk = True
-        If rdoChooseMergeColumns.Checked Then
-            If (Not ucrReceiverFirstDF.IsEmpty() AndAlso Not ucrReceiverSecondDF.IsEmpty) OrElse lstKeyColumns.Items.Count > 0 Then
-                bAllowOk = False
+        If ucrNewDataFrameName.IsEmpty() Then
+            ucrBase.OKEnabled(False)
+        Else
+            If rdoByAllMatching.Checked Then
+                ucrBase.OKEnabled(True)
+            ElseIf rdoChooseColumns.Checked Then
+                If lstKeyColumns.Items.Count > 0 Then
+                    ucrBase.OKEnabled(True)
+                Else
+                    ucrBase.OKEnabled(False)
+                End If
             End If
         End If
-        If ucrNewDataFrameName.IsEmpty() Then
-            bAllowOk = False
-        End If
-        ucrBase.OKEnabled(bAllowOk)
     End Sub
 
     Private Sub ucrBase_ClickReset(sender As Object, e As EventArgs) Handles ucrBase.ClickReset
         SetDefaults()
+        sdgMerge.SetDefaults()
         TestOKEnabled()
     End Sub
 
-    Private Sub ucrSelectorDataFrames_DataFrameChanged() Handles ucrSelectorFirstDataFrame.DataFrameChanged, ucrSelectorSecondDataFrame.DataFrameChanged
-        If Not ucrNewDataFrameName.UserTyped() Then
-            ucrNewDataFrameName.SetName(ucrSelectorFirstDataFrame.ucrAvailableDataFrames.cboAvailableDataFrames.Text & "_merged_with_" & ucrSelectorSecondDataFrame.ucrAvailableDataFrames.cboAvailableDataFrames.Text)
-        End If
-        ucrBase.clsRsyntax.AddParameter("x", clsRFunctionParameter:=ucrSelectorFirstDataFrame.ucrAvailableDataFrames.clsCurrDataFrame)
-        ucrBase.clsRsyntax.AddParameter("y", clsRFunctionParameter:=ucrSelectorSecondDataFrame.ucrAvailableDataFrames.clsCurrDataFrame)
-        ucrBase.clsRsyntax.AddParameter("suffix", "c(" & Chr(34) & ucrSelectorFirstDataFrame.ucrAvailableDataFrames.cboAvailableDataFrames.Text & Chr(34) & ", " & Chr(34) & ucrSelectorSecondDataFrame.ucrAvailableDataFrames.cboAvailableDataFrames.Text & Chr(34) & ")")
+    Private Sub ucrSelectorFirstDF_DataFrameChanged() Handles ucrSelectorFirstDF.DataFrameChanged
+        SetDataFrameParameters()
         ResetKeyList()
     End Sub
 
-    Private Sub ResetKeyList()
-        lstKeyColumns.Columns.Clear()
-        lstKeyColumns.Clear()
-        lstKeyColumns.Columns.Add(ucrSelectorFirstDataFrame.ucrAvailableDataFrames.cboAvailableDataFrames.Text)
-        lstKeyColumns.Columns.Add("-")
-        lstKeyColumns.Columns.Add(ucrSelectorSecondDataFrame.ucrAvailableDataFrames.cboAvailableDataFrames.Text)
-        lstKeyColumns.Columns(0).Width = 95
-        lstKeyColumns.Columns(1).Width = 80
-        lstKeyColumns.Columns(2).Width = 95
-        pnlKeyColumns.Hide()
+    Private Sub ucrSelectorSecondDF_DataFrameChanged() Handles ucrSelectorSecondDF.DataFrameChanged
+        SetDataFrameParameters()
+        ResetKeyList()
     End Sub
 
-    Private Sub JoinType_CheckedChanged(sender As Object, e As EventArgs) Handles rdoFullJoin.CheckedChanged, rdoInnerJoin.CheckedChanged, rdoLeftJoin.CheckedChanged, rdoRightJoin.CheckedChanged
-        If rdoLeftJoin.Checked Then
-            ucrBase.clsRsyntax.SetFunction("left_join")
-        ElseIf rdoFullJoin.Checked Then
-            ucrBase.clsRsyntax.SetFunction("full_join")
-        ElseIf rdoInnerJoin.Checked Then
-            ucrBase.clsRsyntax.SetFunction("inner_join")
-        ElseIf rdoRightJoin.Checked Then
-            ucrBase.clsRsyntax.SetFunction("right_join")
+    Private Sub SetDataFrameParameters()
+        If Not ucrNewDataFrameName.UserTyped() Then
+            ucrNewDataFrameName.SetName("Merge_" & ucrSelectorFirstDF.ucrAvailableDataFrames.cboAvailableDataFrames.Text & "_" & ucrSelectorSecondDF.ucrAvailableDataFrames.cboAvailableDataFrames.Text)
         End If
+        ucrBase.clsRsyntax.AddParameter("x", clsRFunctionParameter:=ucrSelectorFirstDF.ucrAvailableDataFrames.clsCurrDataFrame)
+        ucrBase.clsRsyntax.AddParameter("y", clsRFunctionParameter:=ucrSelectorSecondDF.ucrAvailableDataFrames.clsCurrDataFrame)
+        ucrBase.clsRsyntax.AddParameter("suffix", "c(" & Chr(34) & ucrSelectorFirstDF.ucrAvailableDataFrames.cboAvailableDataFrames.Text & Chr(34) & ", " & Chr(34) & ucrSelectorSecondDF.ucrAvailableDataFrames.cboAvailableDataFrames.Text & Chr(34) & ")")
     End Sub
 
     Private Sub ucrNewDataFrameName_NameChanged() Handles ucrNewDataFrameName.NameChanged
@@ -118,63 +105,85 @@ Public Class dlgMerge
         Else
             ucrBase.clsRsyntax.SetAssignTo(ucrNewDataFrameName.GetText(), strTempDataframe:=ucrNewDataFrameName.GetText())
         End If
+        TestOKEnabled()
     End Sub
 
-    Private Sub KeyOptions_CheckedChanged(sender As Object, e As EventArgs) Handles rdoMergeByAllColumns.CheckedChanged, rdoChooseMergeColumns.CheckedChanged
-        If rdoChooseMergeColumns.Checked Then
-            grpKeys.Visible = True
-            SetByArgument()
-            ucrSelectorFirstDataFrame.SetVariablesEnabled(True)
-            ucrSelectorSecondDataFrame.SetVariablesEnabled(True)
-        Else
+    Private Sub MatchingColumns_CheckedChanged(sender As Object, e As EventArgs) Handles rdoByAllMatching.CheckedChanged, rdoChooseColumns.CheckedChanged
+        If rdoByAllMatching.Checked Then
+            ucrSelectorFirstDF.SetVariablesVisible(False)
+            ucrSelectorSecondDF.SetVariablesVisible(False)
             grpKeys.Visible = False
+            pnlKeyColumns.Visible = False
             ucrBase.clsRsyntax.RemoveParameter("by")
-            ucrSelectorFirstDataFrame.SetVariablesEnabled(False)
-            ucrSelectorSecondDataFrame.SetVariablesEnabled(False)
+        ElseIf rdoChooseColumns.Checked Then
+            ucrSelectorFirstDF.SetVariablesVisible(True)
+            ucrSelectorSecondDF.SetVariablesVisible(True)
+            grpKeys.Visible = True
+            pnlKeyColumns.Visible = True
+            SetByArgument()
         End If
+        TestOKEnabled()
     End Sub
 
-    Private Sub ucrReceiverFirstDFKey1_SelectionChanged(sender As Object, e As EventArgs) Handles ucrReceiverFirstDF.SelectionChanged
-        If Not ucrReceiverFirstDF.IsEmpty() Then
-            If ucrReceiverSecondDF.IsEmpty AndAlso ucrSelectorSecondDataFrame.ContainsVariable(ucrReceiverFirstDF.GetVariableNames(False)) Then
-                ucrReceiverSecondDF.Add(ucrReceiverFirstDF.GetVariableNames(False))
+    Public Sub AutoAddInOtherReceiver(ucrChangedReceiver As ucrReceiverSingle, ucrOtherReceiver As ucrReceiverSingle)
+        If Not ucrChangedReceiver.IsEmpty() Then
+            If ucrOtherReceiver.IsEmpty AndAlso ucrOtherReceiver.Selector.ContainsVariable(ucrChangedReceiver.GetVariableNames(False)) Then
+                ucrOtherReceiver.Add(ucrChangedReceiver.GetVariableNames(False))
             End If
         End If
-        If ucrReceiverFirstDF.IsEmpty() OrElse ucrReceiverSecondDF.IsEmpty Then
-            cmdAddAnotherPair.Enabled = False
+        If ucrChangedReceiver.IsEmpty() OrElse ucrOtherReceiver.IsEmpty Then
+            cmdAddPair.Enabled = False
         Else
-            cmdAddAnotherPair.Enabled = True
+            cmdAddPair.Enabled = True
         End If
-        SetByArgument()
     End Sub
 
     Private Sub SetByArgument()
         Dim lviItem As ListViewItem
+
         clsByList.ClearParameters()
-        If Not ucrReceiverFirstDF.IsEmpty() AndAlso Not ucrReceiverSecondDF.IsEmpty() Then
-            clsByList.AddParameter(ucrReceiverFirstDF.GetVariableNames(), ucrReceiverFirstDF.GetVariableNames())
-        End If
         For Each lviItem In lstKeyColumns.Items
-            clsByList.AddParameter(lviItem.Text(), lviItem.SubItems(2).Text())
+            clsByList.AddParameter(Chr(34) & lviItem.Text() & Chr(34), Chr(34) & lviItem.SubItems(2).Text() & Chr(34))
         Next
+        ucrBase.clsRsyntax.AddParameter("by", clsRFunctionParameter:=clsByList)
     End Sub
 
-    Private Sub cmdAddAnotherPair_Click(sender As Object, e As EventArgs) Handles cmdAddAnotherPair.Click
-        lstKeyColumns.Items.Add(ucrReceiverFirstDF.GetVariableNames()).SubItems.AddRange({"Matched With", ucrReceiverSecondDF.GetVariableNames()})
-        pnlKeyColumns.Show()
+    Private Sub ResetKeyList()
+        lstKeyColumns.Columns.Clear()
+        lstKeyColumns.Clear()
+        lstKeyColumns.Columns.Add(ucrSelectorFirstDF.ucrAvailableDataFrames.cboAvailableDataFrames.Text)
+        lstKeyColumns.Columns.Add(" ")
+        lstKeyColumns.Columns.Add(ucrSelectorSecondDF.ucrAvailableDataFrames.cboAvailableDataFrames.Text)
+        lstKeyColumns.Columns(0).Width = 75
+        lstKeyColumns.Columns(1).Width = 31
+        lstKeyColumns.Columns(2).Width = 75
+        ucrBase.clsRsyntax.RemoveParameter("by")
+        cmdRemoveAll.Enabled = False
+    End Sub
+
+    Private Sub cmdAddPair_Click(sender As Object, e As EventArgs) Handles cmdAddPair.Click
+        Dim i As Integer
+        Dim bFound As Boolean = False
+
+        ' If either column of pair already appears in the list, modify that list, since we can't have a column matched to multiple columns
+        For i = 0 To lstKeyColumns.Items.Count - 1
+            If lstKeyColumns.Items(i).Text = ucrReceiverFirstDF.GetVariableNames(False) Then
+                lstKeyColumns.Items(i).SubItems(2).Text() = ucrReceiverSecondDF.GetVariableNames(False)
+                bFound = True
+            ElseIf lstKeyColumns.Items(i).SubItems(2).Text() = ucrReceiverSecondDF.GetVariableNames(False) Then
+                lstKeyColumns.Items(i).Text = ucrReceiverFirstDF.GetVariableNames(False)
+                bFound = True
+            End If
+        Next
+
+        If Not bFound Then
+            lstKeyColumns.Items.Add(ucrReceiverFirstDF.GetVariableNames(False)).SubItems.AddRange({"and", ucrReceiverSecondDF.GetVariableNames(False)})
+        End If
+        cmdRemoveAll.Enabled = True
         ucrReceiverFirstDF.Clear()
         ucrReceiverSecondDF.Clear()
         SetByArgument()
-    End Sub
-
-    Private Sub cmdRemoveSelectedPair_Click(sender As Object, e As EventArgs) Handles cmdRemoveSelectedPair.Click
-        Dim i As Integer
-
-        If lstKeyColumns.SelectedItems.Count > 0 Then
-            For i = lstKeyColumns.SelectedItems.Count - 1 To 0 Step -1
-                lstKeyColumns.Items.RemoveAt(lstKeyColumns.SelectedIndices(i))
-            Next
-        End If
+        TestOKEnabled()
     End Sub
 
     Private Sub lstKeyColumns_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstKeyColumns.SelectedIndexChanged
@@ -185,7 +194,36 @@ Public Class dlgMerge
         End If
     End Sub
 
-    Private Sub ucrReceiverSecondDF_SelectionChanged(sender As Object, e As EventArgs) Handles ucrReceiverSecondDF.SelectionChanged
+    Private Sub ucrReceiverFirstDF_SelectionChanged(sender As Object, e As EventArgs) Handles ucrReceiverFirstDF.SelectionChanged
+        AutoAddInOtherReceiver(ucrReceiverFirstDF, ucrReceiverSecondDF)
+    End Sub
 
+    Private Sub ucrReceiverSecondDF_SelectionChanged(sender As Object, e As EventArgs) Handles ucrReceiverSecondDF.SelectionChanged
+        AutoAddInOtherReceiver(ucrReceiverSecondDF, ucrReceiverFirstDF)
+    End Sub
+
+    Private Sub cmdRemoveSelectedPair_Click(sender As Object, e As EventArgs) Handles cmdRemoveSelectedPair.Click
+        Dim i As Integer
+
+        If lstKeyColumns.SelectedItems.Count > 0 Then
+            For i = lstKeyColumns.SelectedItems.Count - 1 To 0 Step -1
+                lstKeyColumns.Items.RemoveAt(lstKeyColumns.SelectedIndices(i))
+            Next
+        End If
+        SetByArgument()
+        TestOKEnabled()
+    End Sub
+
+    Private Sub cmdRemoveAll_Click(sender As Object, e As EventArgs) Handles cmdRemoveAll.Click
+        ResetKeyList()
+        TestOKEnabled()
+    End Sub
+
+    Private Sub cmdJoinOptions_Click(sender As Object, e As EventArgs) Handles cmdJoinOptions.Click
+        sdgMerge.ShowDialog()
+    End Sub
+
+    Private Sub ucrNewDataFrameName_ContentsChanged() Handles ucrNewDataFrameName.ContentsChanged
+        TestOKEnabled()
     End Sub
 End Class

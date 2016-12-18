@@ -14,13 +14,15 @@
 ' You should have received a copy of the GNU General Public License k
 ' along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+Imports instat
+
 Public Class ucrInput
-    Protected bUserTyped As Boolean = False
+    Public bUserTyped As Boolean = False
     Public Event NameChanged()
     Public Event ContentsChanged()
     Protected strValidationType As String = "None"
     Dim strReservedWords() As String = ({"if", "else", "repeat", "while", "function", "for", "in", "next", "break", "TRUE", "FALSE", "NULL", "Inf", "NaN", "NA", "NA_integer_", "NA_real_", "NA_complex_", "NA_character_"})
-    Protected clsRList As New RFunction
+    Public clsRList As New RFunction
     Protected dcmMinimum As Decimal = Decimal.MinValue
     Protected dcmMaximum As Decimal = Decimal.MaxValue
     Protected bMinimumIncluded, bMaximumIncluded As Boolean
@@ -28,8 +30,12 @@ Public Class ucrInput
     Protected strDefaultPrefix As String = ""
     Protected WithEvents ucrDataFrameSelector As ucrDataFrame
     Protected bIsReadOnly As Boolean = False
+    Public bAutoChangeOnLeave As Boolean = False
+    Private bLastSilent As Boolean = False
+    Protected lstRecognisedItemParameterValuePairs As New List(Of KeyValuePair(Of String, String))
 
     Public Overridable Sub SetName(strName As String, Optional bSilent As Boolean = False)
+        bLastSilent = bSilent
     End Sub
 
     Public Overridable Function GetText() As String
@@ -43,10 +49,12 @@ Public Class ucrInput
     Public Sub OnNameChanged()
         Me.Text = Me.GetText()
         RaiseEvent NameChanged()
+        OnControlValueChanged()
     End Sub
 
     Public Sub OnContentsChanged()
         RaiseEvent ContentsChanged()
+        OnControlContentsChanged()
     End Sub
 
     Public Function UserTyped() As Boolean
@@ -97,23 +105,31 @@ Public Class ucrInput
 
     Public Sub SetDefaultName()
         If strDefaultPrefix <> "" Then
-            If strDefaultType = "Column" AndAlso (ucrDataFrameSelector IsNot Nothing) Then
-                SetName(frmMain.clsRLink.GetDefaultColumnNames(strDefaultPrefix, ucrDataFrameSelector.cboAvailableDataFrames.Text))
+            If strDefaultType = "Column" Then
+                If ucrDataFrameSelector IsNot Nothing AndAlso ucrDataFrameSelector.cboAvailableDataFrames.Text <> "" AndAlso frmMain.clsRLink.DataFrameExists(ucrDataFrameSelector.cboAvailableDataFrames.Text) Then
+                    SetName(frmMain.clsRLink.GetDefaultColumnNames(strDefaultPrefix, ucrDataFrameSelector.cboAvailableDataFrames.Text))
+                Else
+                    SetName("")
+                End If
             ElseIf strDefaultType = "Model" Then
-                If ucrDataFrameSelector IsNot Nothing Then
+                If ucrDataFrameSelector IsNot Nothing AndAlso ucrDataFrameSelector.cboAvailableDataFrames.Text <> "" Then
                     SetName(frmMain.clsRLink.GetNextDefault(strDefaultPrefix, frmMain.clsRLink.GetModelNames(ucrDataFrameSelector.cboAvailableDataFrames.Text)))
                 Else
                     SetName(frmMain.clsRLink.GetNextDefault(strDefaultPrefix, frmMain.clsRLink.GetModelNames()))
                 End If
             ElseIf strDefaultType = "Data Frame" Then
             ElseIf strDefaultType = "Graph" Then
-                If ucrDataFrameSelector IsNot Nothing Then
+                If ucrDataFrameSelector IsNot Nothing AndAlso ucrDataFrameSelector.cboAvailableDataFrames.Text <> "" Then
                     SetName(frmMain.clsRLink.GetNextDefault(strDefaultPrefix, frmMain.clsRLink.GetGraphNames(ucrDataFrameSelector.cboAvailableDataFrames.Text)))
                 Else
                     SetName(frmMain.clsRLink.GetNextDefault(strDefaultPrefix, frmMain.clsRLink.GetGraphNames()))
                 End If
-            ElseIf strDefaultType = "Filter" AndAlso (ucrDataFrameSelector IsNot Nothing) Then
-                SetName(frmMain.clsRLink.GetNextDefault(strDefaultPrefix, frmMain.clsRLink.GetFilterNames(ucrDataFrameSelector.cboAvailableDataFrames.Text)))
+            ElseIf strDefaultType = "Filter" Then
+                If ucrDataFrameSelector IsNot Nothing AndAlso ucrDataFrameSelector.cboAvailableDataFrames.Text <> "" Then
+                    SetName(frmMain.clsRLink.GetNextDefault(strDefaultPrefix, frmMain.clsRLink.GetFilterNames(ucrDataFrameSelector.cboAvailableDataFrames.Text)))
+                Else
+                    SetName("")
+                End If
             End If
         End If
     End Sub
@@ -350,7 +366,7 @@ Public Class ucrInput
     End Sub
 
     Private Sub ucrInput_TextChanged(sender As Object, e As EventArgs) Handles Me.TextChanged
-        SetName(Me.Text)
+        SetName(Me.Text, bLastSilent)
     End Sub
 
     Public Overridable Property IsReadOnly() As Boolean
@@ -361,4 +377,68 @@ Public Class ucrInput
             bIsReadOnly = bReadOnly
         End Set
     End Property
+
+    Public Overrides Sub UpdateControl(clsRCodeObject As RCodeStructure)
+        Dim clsTempParam As RParameter
+
+        MyBase.UpdateControl(clsRCodeObject)
+
+        'TODO Add methods in RFunction/base class for RFunction/ROperator to do these checks better
+        clsTempParam = clsRCodeObject.GetParameter(strParameterName)
+        If strParameterName <> "" Then
+            If clsTempParam IsNot Nothing Then
+                If GetAllRecognisedParameterValues.Contains(clsTempParam.strArgumentValue) Then
+                    SetName(lstRecognisedItemParameterValuePairs.Find(Function(x) x.Value = clsTempParam.strArgumentValue).Key)
+                Else
+                    SetName(clsTempParam.strArgumentValue)
+                End If
+            Else
+                SetName("")
+            End If
+        End If
+    End Sub
+
+    Public Overrides Sub UpdateRCode(Optional clsRFunction As RFunction = Nothing, Optional clsROperator As ROperator = Nothing)
+        If strParameterName <> "" Then
+            If Not IsEmpty() Then
+                If GetAllRecognisedItems.Contains(GetText()) Then
+                    clsRFunction.AddParameter(strParameterName, lstRecognisedItemParameterValuePairs.Find(Function(x) x.Key = GetText()).Value)
+                Else
+                    clsRFunction.AddParameter(strParameterName, GetText())
+                End If
+            Else
+                clsRFunction.RemoveParameterByName(strParameterName)
+            End If
+        End If
+    End Sub
+
+    ' key = parameter value
+    ' value = item text
+    Public Sub SetParameterValueItemsPairs(lstNewParameterValueItemsPairs As List(Of KeyValuePair(Of String, String)))
+        lstRecognisedItemParameterValuePairs = lstNewParameterValueItemsPairs
+    End Sub
+
+    Public Sub AddToParameterValueItemsPairs(kvpNewPair As KeyValuePair(Of String, String))
+        lstRecognisedItemParameterValuePairs.Add(kvpNewPair)
+    End Sub
+
+    Public Function GetAllRecognisedParameterValues() As List(Of String)
+        Dim lstParamValues As New List(Of String)
+        Dim kvpTemp As KeyValuePair(Of String, String)
+
+        For Each kvpTemp In lstRecognisedItemParameterValuePairs
+            lstParamValues.Add(kvpTemp.Value)
+        Next
+        Return lstParamValues
+    End Function
+
+    Public Function GetAllRecognisedItems() As List(Of String)
+        Dim lstItems As New List(Of String)
+        Dim kvpTemp As KeyValuePair(Of String, String)
+
+        For Each kvpTemp In lstRecognisedItemParameterValuePairs
+            lstItems.Add(kvpTemp.Key)
+        Next
+        Return lstItems
+    End Function
 End Class

@@ -39,7 +39,18 @@ Public Class ucrAxes
         TitleDefaults()
         ScalesDefaults()
         TickMarkersDefaults()
+        ucrTickMarkers.SetName("Interval")
+        TitleFunction()
+        ucrOverwriteTitle.SetName("")
+        nudTickMarkersNoOfDecimalPlaces.Value = 0
+        nudFrom.Value = 0
+        nudTo.Value = 0
+        nudInStepsOf.Value = 0
+        nudLowerLimit.Value = 0
+        nudUpperLimit.Value = 0
+        nudScalesNoOfDecimalPlaces.Value = 0
     End Sub
+
     Public Sub Reset()
         SetDefaults()
     End Sub
@@ -286,5 +297,6 @@ Public Class ucrAxes
             clsSeqFunction.RemoveParameterByName("by")
         End If
     End Sub
+
 End Class
 

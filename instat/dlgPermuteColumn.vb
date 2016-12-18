@@ -35,7 +35,10 @@ Public Class dlgPermuteColumn
     Private Sub SetDefaults()
         ucrReceiverPermuteRows.Selector = ucrPermuteRowsSelector
         ucrReceiverPermuteRows.SetMeAsReceiver()
-        ucrInputPermuteRows.SetPrefix("permute")
+        ucrPermuteRowsSelector.Reset()
+        nudNumberOfColumns.Value = 1
+        nudSetSeed.Value = 1
+        ucrInputPermuteRows.SetPrefix("Permute")
         chkSetSeed.Checked = False
         nudSetSeed.Visible = False
         TestOkEnabled()
@@ -46,29 +49,27 @@ Public Class dlgPermuteColumn
     Private Sub InitialiseDialog()
         ucrReceiverPermuteRows.Selector = ucrPermuteRowsSelector
         ucrReceiverPermuteRows.SetMeAsReceiver()
+        ucrReceiverPermuteRows.bUseFilteredData = False
         clsSetSeedFunc.SetRCommand("set.seed")
         ucrBase.clsRsyntax.SetFunction("replicate")
         ucrBase.clsRsyntax.AddParameter("expr", clsRFunctionParameter:=clsSetSampleFunc)
         clsSetSampleFunc.SetRCommand("sample")
         clsSetSampleFunc.AddParameter("x", clsRFunctionParameter:=ucrReceiverPermuteRows.GetVariables())
         clsSetSampleFunc.AddParameter("replace", "FALSE")
-        nudSetSeed.Visible = False
         ucrBase.iHelpTopicID = 66
-
-        ucrInputPermuteRows.SetPrefix("permute")
         ucrInputPermuteRows.SetItemsTypeAsColumns()
         ucrInputPermuteRows.SetDefaultTypeAsColumn()
         ucrInputPermuteRows.SetDataFrameSelector(ucrPermuteRowsSelector.ucrAvailableDataFrames)
         ucrInputPermuteRows.SetValidationTypeAsRVariable()
-
-
+        nudSetSeed.Minimum = Integer.MinValue
+        nudSetSeed.Maximum = Integer.MaxValue
     End Sub
 
     Private Sub TestOkEnabled()
-        If ucrReceiverPermuteRows.IsEmpty Then
-            ucrBase.OKEnabled(False)
-        Else
+        If Not ucrReceiverPermuteRows.IsEmpty AndAlso Not ucrInputPermuteRows.IsEmpty Then
             ucrBase.OKEnabled(True)
+        Else
+            ucrBase.OKEnabled(False)
         End If
     End Sub
 
@@ -101,6 +102,7 @@ Public Class dlgPermuteColumn
 
     Private Sub ucrInputPermuteRows_nameChanged() Handles ucrInputPermuteRows.NameChanged
         ucrBase.clsRsyntax.SetAssignTo(strAssignToName:=ucrInputPermuteRows.GetText, strTempDataframe:=ucrPermuteRowsSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, strTempColumn:=ucrInputPermuteRows.GetText, bAssignToIsPrefix:=True)
+        TestOkEnabled()
     End Sub
 
     Private Sub ucrPermuteRowsSelector_DataFrameChanged() Handles ucrPermuteRowsSelector.DataFrameChanged

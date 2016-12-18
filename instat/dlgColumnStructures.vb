@@ -17,12 +17,13 @@
 Imports instat.Translations
 Public Class dlgColumnStructure
     Public clsCourByStructure As New RFunction
+    'clsCourByStructure is here to construct the R-command that will colour columns according to their type in case it is required (see relevant tick box).
     Public bFirstLoad As Boolean = True
     Private Sub ucrSelectorColumnStructures_Load(sender As Object, e As EventArgs) Handles Me.Load
         autoTranslate(Me)
         If bFirstLoad Then
-            SetDefaults()
             InitialiseDialog()
+            SetDefaults()
             bFirstLoad = False
         Else
             ReopenDialog()
@@ -32,10 +33,9 @@ Public Class dlgColumnStructure
     End Sub
 
     Private Sub InitialiseDialog()
+        ucrBase.iHelpTopicID = 51
         clsCourByStructure.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$set_column_colours_by_metadata")
         clsCourByStructure.AddParameter("property", Chr(34) & "Structure" & Chr(34))
-        clsCourByStructure.AddParameter("data_name", Chr(34) & ucrSelectorColumnStructure.ucrAvailableDataFrames.cboAvailableDataFrames.SelectedItem & Chr(34))
-        'clsCourByStructure.AddParameter("columns")
         ucrReceiverType2.Selector = ucrSelectorColumnStructure
         ucrReceiverType1.Selector = ucrSelectorColumnStructure
         ucrReceiverType3.Selector = ucrSelectorColumnStructure
@@ -48,6 +48,7 @@ Public Class dlgColumnStructure
     Private Sub SetDefaults()
         SetColumnStructureInReceiver()
         ucrReceiverType1.SetMeAsReceiver()
+        chkColourColumnsByStr.Checked = False
     End Sub
 
     Private Sub ReopenDialog()
@@ -62,7 +63,11 @@ Public Class dlgColumnStructure
     End Sub
 
     Private Sub TestOKEnabled()
-        ucrBase.OKEnabled(True)
+        If (Not ucrReceiverType1.IsEmpty) OrElse (Not ucrReceiverType2.IsEmpty) OrElse (Not ucrReceiverType3.IsEmpty) Then
+            ucrBase.OKEnabled(True)
+        Else
+            ucrBase.OKEnabled(False)
+        End If
     End Sub
 
     Private Sub ucrBase_ClickReset(sender As Object, e As EventArgs) Handles ucrBase.ClickReset
@@ -72,30 +77,31 @@ Public Class dlgColumnStructure
 
     Private Sub ucrReceiverForColumnStructure_SelectionChanged() Handles ucrReceiverType1.SelectionChanged, ucrReceiverType3.SelectionChanged, ucrReceiverType2.SelectionChanged
         StructureParameters()
+        TestOKEnabled()
     End Sub
 
     Private Sub StructureParameters()
-        If ucrReceiverType1.IsEmpty = False Then
+        If Not ucrReceiverType1.IsEmpty Then
+            ucrBase.clsRsyntax.AddParameter("struc_type_1", ucrReceiverType1.GetVariableNames)
+        Else
+            ucrBase.clsRsyntax.RemoveParameter("struc_type_1")
+        End If
+        If Not ucrReceiverType2.IsEmpty Then
             ucrBase.clsRsyntax.AddParameter("struc_type_2", ucrReceiverType2.GetVariableNames)
         Else
             ucrBase.clsRsyntax.RemoveParameter("struc_type_2")
         End If
-        If ucrReceiverType3.IsEmpty = False Then
+        If Not ucrReceiverType3.IsEmpty Then
             ucrBase.clsRsyntax.AddParameter("struc_type_3", ucrReceiverType3.GetVariableNames)
         Else
             ucrBase.clsRsyntax.RemoveParameter("struc_type_3")
-        End If
-
-        If ucrReceiverType2.IsEmpty = False Then
-            ucrBase.clsRsyntax.AddParameter("struc_type_1", ucrReceiverType1.GetVariableNames)
-        Else
-            ucrBase.clsRsyntax.RemoveParameter("struc_type_1")
         End If
         TestOKEnabled()
     End Sub
 
     Private Sub ucrSelectorColumnStructure_DataFrameChanged() Handles ucrSelectorColumnStructure.DataFrameChanged
         ucrBase.clsRsyntax.AddParameter("data_name", Chr(34) & ucrSelectorColumnStructure.ucrAvailableDataFrames.cboAvailableDataFrames.SelectedItem & Chr(34))
+        clsCourByStructure.AddParameter("data_name", Chr(34) & ucrSelectorColumnStructure.ucrAvailableDataFrames.cboAvailableDataFrames.SelectedItem & Chr(34))
         SetColumnStructureInReceiver()
     End Sub
 
@@ -103,7 +109,6 @@ Public Class dlgColumnStructure
     Private Sub ucrBase_ClickOk(sender As Object, e As EventArgs) Handles ucrBase.ClickOk
         If chkColourColumnsByStr.Checked Then
             frmMain.clsRLink.RunScript(clsCourByStructure.ToScript())
-            clsCourByStructure.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$set_column_colours_by_metadata")
         End If
     End Sub
 End Class

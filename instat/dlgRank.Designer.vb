@@ -45,12 +45,12 @@ Partial Class dlgRank
         'lblSelectedVariable
         '
         Me.lblSelectedVariable.AutoSize = True
-        Me.lblSelectedVariable.Location = New System.Drawing.Point(255, 25)
+        Me.lblSelectedVariable.Location = New System.Drawing.Point(255, 28)
         Me.lblSelectedVariable.Name = "lblSelectedVariable"
-        Me.lblSelectedVariable.Size = New System.Drawing.Size(90, 13)
+        Me.lblSelectedVariable.Size = New System.Drawing.Size(93, 13)
         Me.lblSelectedVariable.TabIndex = 1
         Me.lblSelectedVariable.Tag = "Selected_Variable"
-        Me.lblSelectedVariable.Text = "Selected Variable"
+        Me.lblSelectedVariable.Text = "Selected Variable:"
         '
         'grpTies
         '
@@ -181,10 +181,10 @@ Partial Class dlgRank
         Me.lblNewColumName.AutoSize = True
         Me.lblNewColumName.Location = New System.Drawing.Point(10, 272)
         Me.lblNewColumName.Name = "lblNewColumName"
-        Me.lblNewColumName.Size = New System.Drawing.Size(98, 13)
+        Me.lblNewColumName.Size = New System.Drawing.Size(101, 13)
         Me.lblNewColumName.TabIndex = 5
         Me.lblNewColumName.Tag = "New_Column_Name"
-        Me.lblNewColumName.Text = "New Column Name"
+        Me.lblNewColumName.Text = "New Column Name:"
         '
         'ucrInputColName
         '
@@ -197,6 +197,7 @@ Partial Class dlgRank
         'ucrSelectorForRank
         '
         Me.ucrSelectorForRank.bShowHiddenColumns = False
+        Me.ucrSelectorForRank.bUseCurrentFilter = True
         Me.ucrSelectorForRank.Location = New System.Drawing.Point(10, 10)
         Me.ucrSelectorForRank.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrSelectorForRank.Name = "ucrSelectorForRank"
@@ -205,7 +206,7 @@ Partial Class dlgRank
         '
         'ucrReceiverRank
         '
-        Me.ucrReceiverRank.Location = New System.Drawing.Point(255, 41)
+        Me.ucrReceiverRank.Location = New System.Drawing.Point(255, 43)
         Me.ucrReceiverRank.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrReceiverRank.Name = "ucrReceiverRank"
         Me.ucrReceiverRank.Selector = Nothing
@@ -223,7 +224,7 @@ Partial Class dlgRank
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(419, 351)
+        Me.ClientSize = New System.Drawing.Size(419, 355)
         Me.Controls.Add(Me.lblNewColumName)
         Me.Controls.Add(Me.ucrInputColName)
         Me.Controls.Add(Me.ucrSelectorForRank)
@@ -233,6 +234,8 @@ Partial Class dlgRank
         Me.Controls.Add(Me.ucrReceiverRank)
         Me.Controls.Add(Me.ucrBase)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "dlgRank"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Tag = "Rank"

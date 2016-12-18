@@ -32,19 +32,13 @@ Public Class dlgDescribeTwoVariable
         autoTranslate(Me)
     End Sub
 
-    Private Sub cmdSummaries_click(sender As Object, e As EventArgs) Handles cmdSummaries.Click
-        sdgSummaries.ShowDialog()
-    End Sub
-
-    Private Sub cmdDisplayOptions_Click(sender As Object, e As EventArgs) Handles cmdDisplayOptions.Click
-        sdgDescribeDisplay.GrpBoxEnable()
-        sdgDescribeDisplay.ShowDialog()
-    End Sub
-
     Public Sub TestOKEnabled()
-        If ((Not ucrReceiverFirstVar.IsEmpty()) And (Not ucrReceiverSecondVar.IsEmpty())) Then
-            ucrBaseDescribeTwoVar.OKEnabled(True)
-            Results()
+        If ((Not ucrReceiverFirstVar.IsEmpty()) AndAlso (Not ucrReceiverSecondVar.IsEmpty())) Then
+            If ((strVarType = "numeric" OrElse strVarType = "integer") AndAlso (strSecondVarType = "factor")) AndAlso sdgSummaries.strSummariesParameter = "c()" Then
+                ucrBaseDescribeTwoVar.OKEnabled(False)
+            Else
+                ucrBaseDescribeTwoVar.OKEnabled(True)
+            End If
         Else
             ucrBaseDescribeTwoVar.OKEnabled(False)
         End If
@@ -55,7 +49,6 @@ Public Class dlgDescribeTwoVariable
     End Sub
 
     Private Sub SetDefaults()
-        ucrBaseDescribeTwoVar.clsRsyntax.iCallType = 2
         clsRCorelation.SetRCommand("cor")
         clsRCustomSummary.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$calculate_summary")
         clsRFreqTables.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$frequency_tables")
@@ -64,13 +57,15 @@ Public Class dlgDescribeTwoVariable
         chkSaveResult.Enabled = False
         cmdSummaries.Visible = False
         cmdDisplayOptions.Visible = False
+        chkOmitMissing.Checked = False
         sdgSummaries.SetMyRFunction(clsRCustomSummary)
         sdgDescribeDisplay.SetAnovaDispOptions(clsRAnova)
         sdgDescribeDisplay.SetFreqDispOptions(clsRFreqTables)
         sdgSummaries.SetDefaults()
         sdgDescribeDisplay.SetDefaults()
+        ucrReceiverFirstVar.SetMeAsReceiver()
         ucrSelectorDescribeTwoVar.Reset()
-        chkSaveResult.Checked = False
+        ucrSelectorDescribeTwoVar.Focus()
         StoreResultsParamenter()
         OutputOption()
         TestOKEnabled()
@@ -79,18 +74,30 @@ Public Class dlgDescribeTwoVariable
     Private Sub InitialiseDialog()
         ucrBaseDescribeTwoVar.clsRsyntax.iCallType = 2
         ucrReceiverFirstVar.Selector = ucrSelectorDescribeTwoVar
-        ucrReceiverSecondVar.Selector = ucrSelectorDescribeTwoVar
+        ucrReceiverFirstVar.SetSingleTypeStatus(True)
         ucrReceiverFirstVar.SetMeAsReceiver()
+        ucrReceiverSecondVar.Selector = ucrSelectorDescribeTwoVar
         clsGetDataType.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$get_variables_metadata")
         clsGetDataType.AddParameter("property", "data_type_label")
         clsGetSecondDataType.SetRCommand(frmMain.clsRLink.strInstatDataObject & "$get_variables_metadata")
         clsGetSecondDataType.AddParameter("property", "data_type_label")
-        'ucrBaseDescribeOneVar.iHelpTopicID = 
+        ucrBaseDescribeTwoVar.iHelpTopicID = 414
     End Sub
 
     Private Sub ucrBaseDescribeOneVar_ClickReset(sender As Object, e As EventArgs) Handles ucrBaseDescribeTwoVar.ClickReset
         SetDefaults()
         TestOKEnabled()
+    End Sub
+
+    Private Sub cmdSummaries_click(sender As Object, e As EventArgs) Handles cmdSummaries.Click
+        sdgSummaries.ShowDialog()
+        sdgSummaries.TestSummaries()
+        TestOKEnabled()
+    End Sub
+
+    Private Sub cmdDisplayOptions_Click(sender As Object, e As EventArgs) Handles cmdDisplayOptions.Click
+        sdgDescribeDisplay.GrpBoxEnable()
+        sdgDescribeDisplay.ShowDialog()
     End Sub
 
     Private Sub Correlation()
@@ -102,7 +109,17 @@ Public Class dlgDescribeTwoVariable
     End Sub
 
     Public Sub Results()
-        SecondVarType()
+        If ucrReceiverFirstVar.GetCurrentItemTypes.Count > 0 Then
+            strVarType = ucrReceiverFirstVar.GetCurrentItemTypes.Item(0)
+        Else
+            strVarType = ""
+        End If
+        If (Not ucrReceiverSecondVar.IsEmpty()) Then
+            strSecondVarType = ucrReceiverSecondVar.strCurrDataType
+        Else
+            strSecondVarType = ""
+        End If
+
         If ((strVarType = "numeric" OrElse strVarType = "integer") And (strSecondVarType = "numeric" OrElse strSecondVarType = "integer")) Then
             chkSaveResult.Enabled = False
             cmdSummaries.Visible = False
@@ -127,50 +144,9 @@ Public Class dlgDescribeTwoVariable
             ucrBaseDescribeTwoVar.clsRsyntax.SetBaseRFunction(clsRFreqTables)
             clsRFreqTables.AddParameter("x_col_names", ucrReceiverFirstVar.GetVariableNames())
             clsRFreqTables.AddParameter("y_col_name", ucrReceiverSecondVar.GetVariableNames())
-        End If
-    End Sub
-
-    Private Sub SecondVarType()
-        If (Not ucrReceiverSecondVar.IsEmpty()) Then
-            clsGetSecondDataType.AddParameter("data_name", Chr(34) & ucrSelectorDescribeTwoVar.ucrAvailableDataFrames.cboAvailableDataFrames.Text & Chr(34))
-            clsGetSecondDataType.AddParameter("column", ucrReceiverSecondVar.GetVariableNames())
-            strSecondVarType = frmMain.clsRLink.RunInternalScriptGetValue(clsGetSecondDataType.ToScript()).AsCharacter(0)
         Else
-            strSecondVarType = ""
-        End If
-    End Sub
-
-    Private Sub CheckType()
-        Dim strVariableTypes As List(Of String)
-        Dim strOldType As String
-        strOldType = strVarType
-        If (Not ucrReceiverFirstVar.IsEmpty()) Then
-            clsGetDataType.AddParameter("data_name", Chr(34) & ucrSelectorDescribeTwoVar.ucrAvailableDataFrames.cboAvailableDataFrames.Text & Chr(34))
-            clsGetDataType.AddParameter("column", ucrReceiverFirstVar.GetVariableNames())
-            If ucrReceiverFirstVar.lstSelectedVariables.Items.Count = 1 Then
-                strVarType = frmMain.clsRLink.RunInternalScriptGetValue(clsGetDataType.ToScript()).AsCharacter(0)
-                If (strVarType = "numeric" OrElse strVarType = "integer") Then
-                    ucrReceiverFirstVar.SetDataType("numeric")
-                Else
-                    ucrReceiverFirstVar.SetDataType(strVarType)
-                End If
-            ElseIf strVarType = "" AndAlso ucrReceiverFirstVar.lstSelectedVariables.Items.Count > 1 Then
-                strVariableTypes = frmMain.clsRLink.RunInternalScriptGetValue(clsGetDataType.ToScript()).AsCharacter.ToList()
-                If strVariableTypes.Distinct().Count > 1 AndAlso Not (strVariableTypes.Distinct().Count = 2 AndAlso strVariableTypes.Distinct().Contains("numeric") AndAlso strVariableTypes.Distinct().Contains("integer")) Then
-                    MsgBox("Cannot add these variables. All variables must be of the same data type.", MsgBoxStyle.OkOnly, "Cannot add variables.")
-                    ucrReceiverFirstVar.Clear()
-                Else
-                    If strVariableTypes.Distinct().Count = 1 Then
-                        strVarType = strVariableTypes(0)
-                    Else
-                        strVarType = "numeric"
-                    End If
-                    ucrReceiverFirstVar.SetDataType(strVarType)
-                End If
-            End If
-        Else
-            strVarType = ""
-            ucrReceiverFirstVar.RemoveIncludedMetadataProperty(strProperty:="class")
+            cmdSummaries.Visible = False
+            cmdDisplayOptions.Visible = False
         End If
     End Sub
 
@@ -184,13 +160,23 @@ Public Class dlgDescribeTwoVariable
         clsRAnova.AddParameter("data_name", Chr(34) & ucrSelectorDescribeTwoVar.ucrAvailableDataFrames.cboAvailableDataFrames.SelectedItem & Chr(34))
     End Sub
 
-    Private Sub ucrReceiverSelectedVariables_SelectionChanged() Handles ucrReceiverFirstVar.SelectionChanged
-        CheckType()
+    Private Sub ucrReceiverFirstVar_SelectionChanged() Handles ucrReceiverFirstVar.SelectionChanged
         If Not ucrReceiverFirstVar.IsEmpty Then
             clsRCustomSummary.AddParameter("columns_to_summarise", ucrReceiverFirstVar.GetVariableNames())
         Else
             clsRCustomSummary.RemoveParameterByName("columns_to_summarise")
         End If
+        Results()
+        TestOKEnabled()
+    End Sub
+
+    Private Sub ucrReceiverSecondVar_SelectionChanged() Handles ucrReceiverSecondVar.SelectionChanged
+        If Not ucrReceiverSecondVar.IsEmpty Then
+            clsRCustomSummary.AddParameter("factors", ucrReceiverSecondVar.GetVariableNames)
+        Else
+            clsRCustomSummary.RemoveParameterByName("factors")
+        End If
+        Results()
         TestOKEnabled()
     End Sub
 
@@ -202,6 +188,11 @@ Public Class dlgDescribeTwoVariable
     Private Sub chkDisplayResults_CheckedChanged(sender As Object, e As EventArgs)
         StoreResultsParamenter()
         OutputOption()
+    End Sub
+
+    Private Sub ucrBaseDescribeTwoVar_ClickReset(sender As Object, e As EventArgs) Handles ucrBaseDescribeTwoVar.ClickReset
+        SetDefaults()
+        TestOKEnabled()
     End Sub
 
     Private Sub StoreResultsParamenter()
@@ -217,13 +208,15 @@ Public Class dlgDescribeTwoVariable
         clsRCustomSummary.AddParameter("drop", "TRUE")
     End Sub
 
-    Private Sub ucrReceiverSecondVar_SelectionChanged() Handles ucrReceiverSecondVar.SelectionChanged
-        If Not ucrReceiverSecondVar.IsEmpty Then
-            SecondVarType()
-            clsRCustomSummary.AddParameter("factors", ucrReceiverSecondVar.GetVariableNames)
+    Private Sub chkExcludeMissing_CheckedChanged(sender As Object, e As EventArgs) Handles chkOmitMissing.CheckedChanged
+        If chkOmitMissing.Checked Then
+            clsRCustomSummary.AddParameter("na.rm", "TRUE")
         Else
-            clsRCustomSummary.RemoveParameterByName("factors")
+            If frmMain.clsInstatOptions.bIncludeRDefaultParameters Then
+                clsRCustomSummary.AddParameter("na.rm", "FALSE")
+            Else
+                clsRCustomSummary.RemoveParameterByName("na.rm")
+            End If
         End If
-        TestOKEnabled()
     End Sub
 End Class

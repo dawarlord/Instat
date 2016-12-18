@@ -17,7 +17,7 @@
 
 Public Class ucrLayerParamsControls
     Public clsGeomFunction As RFunction
-
+    Private bEditGeomFunction As Boolean = True 'Warning/question: is there no load sub for this ucr ?     We usually avoid to set defaults like this.
     Public Event RParameterChanged(ucrControl As ucrLayerParamsControls)
 
     Private Sub InitialiseControl()
@@ -26,16 +26,23 @@ Public Class ucrLayerParamsControls
 
     Public Sub SetGeomFunction(clsTempFunction As RFunction)
         clsGeomFunction = clsTempFunction
-        RaiseEvent RParameterChanged(Me)
+        'RaiseEvent RParameterChanged(Me) 'Warning : this was source of problems... the controls should adapt to the content of clsGeomFunction first, then when controls are changed, clsGeomFunction is changed in turn according to the content of the controls.
     End Sub
 
     Public Sub SetLayerParameter(clsTempLayerParam As LayerParameter)
+        'In the following (a little further), the ucrReceiverMetadateProperty will be setup according to the content of clsGeomFunction. While doing so, we don't want to change the content of clsGeomFunction according to the changes that have been made in the ucrReceiverMetadataProperty. Hence we set bEditGeomFunction to False (see ucrLayerParamsControls_RParameterChanged)
+        bEditGeomFunction = False
+
+        'This sets up the Layer parameter of the current control. First get the right LayerParameter stored in the ucrReceiverMetadataProperty.
         ucrReceiverMetadataProperty.clsLayerParam = clsTempLayerParam
+        'The following sub sets the right form for the ucrReceiverProperty according to the type, default value and other features of the layer parameter (info from clsLayerParam).
         ucrReceiverMetadataProperty.SetControls()
-        If Not IsNothing(ucrReceiverMetadataProperty.clsLayerParam) Then
+        'Then the parameter's label, ucrReceiverMP, and value are set if clsLayerParameter is non-empty. Otherwise parameter name chk is hidden
+        If ucrReceiverMetadataProperty.clsLayerParam IsNot Nothing Then
             chkParamName.Visible = True
             chkParamName.Text = ucrReceiverMetadataProperty.clsLayerParam.strLayerParameterName
 
+            'If that parameter has already a value in the clsGeomFunction, it needs to be setup accordingly on the dialog. Otherwise defaults are applied.
             If clsGeomFunction.GetParameter(ucrReceiverMetadataProperty.clsLayerParam.strLayerParameterName) Is Nothing Then
                 ucrReceiverMetadataProperty.SetValue(ucrReceiverMetadataProperty.clsLayerParam.strParameterDefaultValue)
                 chkParamName.Checked = False
@@ -43,21 +50,28 @@ Public Class ucrLayerParamsControls
                 ucrReceiverMetadataProperty.SetValue(clsGeomFunction.GetParameter(ucrReceiverMetadataProperty.clsLayerParam.strLayerParameterName).strArgumentValue)
                 chkParamName.Checked = True
             End If
+            'If the parameter is checked, the value it takes should be visible.
+            ucrReceiverMPVisible()
             ucrReceiverMetadataProperty.ctrActive.Visible = chkParamName.Checked
         Else
             chkParamName.Visible = False
         End If
-
+        'At the end of the procedure, bChangeclsGeomFunction is set to true again.
+        bEditGeomFunction = True
     End Sub
 
-    Private Sub chkParamName_CheckedChanged(sender As Object, e As EventArgs) Handles chkParamName.CheckedChanged
+    Private Sub ucrReceiverMPVisible()
         ucrReceiverMetadataProperty.Visible = chkParamName.Checked
+    End Sub
+    Private Sub chkParamName_CheckedChanged(sender As Object, e As EventArgs) Handles chkParamName.CheckedChanged
+        ucrReceiverMPVisible()
         ucrReceiverMetadataProperty.ctrActive.Visible = True
         RaiseEvent RParameterChanged(Me)
     End Sub
 
     Private Sub ucrLayerParamsControls_RParameterChanged(ucrControl As ucrLayerParamsControls) Handles Me.RParameterChanged
-        If Not IsNothing(ucrReceiverMetadataProperty.clsLayerParam) AndAlso ucrReceiverMetadataProperty.ctrActive IsNot Nothing AndAlso Not IsNothing(clsGeomFunction) Then
+        'The clsGeomFunction's parameters are adapted to the content of the ucrMetadateReceiver, unless one of the components has not been populated or unless bEditGeomFunction is False.
+        If Not IsNothing(ucrReceiverMetadataProperty.clsLayerParam) AndAlso ucrReceiverMetadataProperty.ctrActive IsNot Nothing AndAlso Not IsNothing(clsGeomFunction) AndAlso bEditGeomFunction Then
             If chkParamName.Checked AndAlso ucrReceiverMetadataProperty.ctrActive.Text <> "" Then
                 clsGeomFunction.AddParameter(ucrReceiverMetadataProperty.clsLayerParam.strLayerParameterName, ucrReceiverMetadataProperty.ctrActive.Text)
             Else

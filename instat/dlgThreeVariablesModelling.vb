@@ -37,17 +37,14 @@ Public Class dlgThreeVariableModelling
     Private Sub InitialiseDialog()
         ucrBaseThreeVariableModelling.clsRsyntax.iCallType = 2
         ucrBaseThreeVariableModelling.clsRsyntax.SetFunction("")
-        ucrBaseThreeVariableModelling.iHelpTopicID = 176
+        ucrBaseThreeVariableModelling.iHelpTopicID = 369
         clsModel.SetOperation("~")
-        clsModel.SetParameter(False, clsOp:=clsModel1)
+        clsModel.AddParameter(clsROperatorParameter:=clsModel1)
         clsModel1.bBrackets = False
         ucrResponse.Selector = ucrSelectorThreeVariableModelling
         ucrFirstExplanatory.Selector = ucrSelectorThreeVariableModelling
         ucrSecondExplanatory.Selector = ucrSelectorThreeVariableModelling
-        ucrModelOperator.cboInput.Items.Add("+")
-        ucrModelOperator.cboInput.Items.Add("*")
-        ucrModelOperator.cboInput.Items.Add(":")
-        ucrModelOperator.cboInput.Items.Add("/")
+        ucrModelOperator.SetItems({"+", "*", ":", "/"})
         ucrFamily.SetGLMDistributions()
         ucrModelName.SetDataFrameSelector(ucrSelectorThreeVariableModelling.ucrAvailableDataFrames)
         ucrModelName.SetPrefix("reg")
@@ -63,8 +60,6 @@ Public Class dlgThreeVariableModelling
         sdgModelOptions.SetRCIFunction(clsRCIFunction)
         sdgVariableTransformations.SetRCIFunction(clsRCIFunction)
         AssignModelName()
-        ModelOperator()
-        TestOKEnabled()
         ucrModelName.SetValidationTypeAsRVariable()
     End Sub
 
@@ -94,6 +89,9 @@ Public Class dlgThreeVariableModelling
         ucrModelPreview.Reset()
         ResponseConvert()
         ModelOperator()
+        sdgSimpleRegOptions.chkDisplayCLimits.Enabled = True
+        sdgSimpleRegOptions.lblDisplayCLevel.Enabled = True
+        sdgSimpleRegOptions.nudDisplayCLevel.Enabled = True
         TestOKEnabled()
     End Sub
 
@@ -113,10 +111,6 @@ Public Class dlgThreeVariableModelling
         AssignModelName()
     End Sub
 
-    Private Sub cmdRegressionOptions_Click(sender As Object, e As EventArgs) Handles cmdDisplayOptions.Click
-        sdgSimpleRegOptions.ShowDialog()
-    End Sub
-
     Public Sub ResponseConvert()
         If Not ucrResponse.IsEmpty Then
             ucrFamily.RecieverDatatype(ucrSelectorThreeVariableModelling.ucrAvailableDataFrames.cboAvailableDataFrames.Text, ucrResponse.GetVariableNames(bWithQuotes:=False))
@@ -130,10 +124,10 @@ Public Class dlgThreeVariableModelling
             If chkConvertToVariate.Checked Then
                 clsRConvert.SetRCommand("as.numeric")
                 clsRConvert.AddParameter("x", ucrResponse.GetVariableNames(bWithQuotes:=False))
-                clsModel.SetParameter(True, clsRFunc:=clsRConvert)
+                clsModel.AddParameter(iPosition:=0, clsRFunctionParameter:=clsRConvert)
                 ucrFamily.RecieverDatatype("numeric")
             Else
-                clsModel.SetParameter(True, strValue:=ucrResponse.GetVariableNames(bWithQuotes:=False))
+                clsModel.AddParameter(iPosition:=0, strParameterValue:=ucrResponse.GetVariableNames(bWithQuotes:=False))
                 ucrFamily.RecieverDatatype(ucrSelectorThreeVariableModelling.ucrAvailableDataFrames.cboAvailableDataFrames.Text, ucrResponse.GetVariableNames(bWithQuotes:=False))
             End If
             sdgModelOptions.ucrFamily.RecieverDatatype(ucrFamily.strDataType)
@@ -178,7 +172,7 @@ Public Class dlgThreeVariableModelling
                     sdgVariableTransformations.ModelFunction(True)
                 Else
                     sdgVariableTransformations.rdoIdentity.Checked = True
-                    clsModel1.SetParameter(True, strValue:=currentReceiver.GetVariableNames(False))
+                    clsModel1.AddParameter(iPosition:=0, strParameterValue:=currentReceiver.GetVariableNames(False))
                 End If
             End If
             If currentReceiver.Name = "ucrSecondExplanatory" Then
@@ -187,7 +181,7 @@ Public Class dlgThreeVariableModelling
                     sdgVariableTransformations.ModelFunction(False)
                 Else
                     sdgVariableTransformations.rdoIdentity.Checked = True
-                    clsModel1.SetParameter(False, strValue:=currentReceiver.GetVariableNames(False))
+                    clsModel1.AddParameter(iPosition:=0, strParameterValue:=currentReceiver.GetVariableNames(False))
                 End If
             End If
             'Applying function to response variable 
@@ -197,7 +191,7 @@ Public Class dlgThreeVariableModelling
             'sdgVariableTransformations.ModelFunction(True)
             'Else
             'sdgVariableTransformations.rdoIdentity.Checked = True
-            'clsModel.SetParameter(True, strValue:=currentReceiver.GetVariableNames(False))
+            'clsModel.AddParameter(True, strParameterValue:=currentReceiver.GetVariableNames(False))
             'End If
         End If
         'ucrModelPreview.SetName(clsModel.ToScript)

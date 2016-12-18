@@ -29,43 +29,43 @@ Partial Class dlgReorderSheet
         '
         'lblSheetsToReoder
         '
-        Me.lblSheetsToReoder.AutoSize = True
-        Me.lblSheetsToReoder.Location = New System.Drawing.Point(12, 9)
+        Me.lblSheetsToReoder.Location = New System.Drawing.Point(12, 21)
         Me.lblSheetsToReoder.Name = "lblSheetsToReoder"
-        Me.lblSheetsToReoder.Size = New System.Drawing.Size(90, 13)
-        Me.lblSheetsToReoder.TabIndex = 3
+        Me.lblSheetsToReoder.Size = New System.Drawing.Size(100, 23)
+        Me.lblSheetsToReoder.TabIndex = 0
         Me.lblSheetsToReoder.Text = "Sheets to Reoder"
         '
         'ucrSheetsToReorder
         '
-        Me.ucrSheetsToReorder.Location = New System.Drawing.Point(12, 25)
+        Me.ucrSheetsToReorder.Location = New System.Drawing.Point(15, 47)
         Me.ucrSheetsToReorder.Name = "ucrSheetsToReorder"
         Me.ucrSheetsToReorder.Size = New System.Drawing.Size(154, 139)
-        Me.ucrSheetsToReorder.TabIndex = 2
+        Me.ucrSheetsToReorder.TabIndex = 1
         Me.ucrSheetsToReorder.ucrDataFrameList = Nothing
         Me.ucrSheetsToReorder.ucrReceiver = Nothing
         '
         'ucrBase
         '
-        Me.ucrBase.Location = New System.Drawing.Point(12, 175)
+        Me.ucrBase.Location = New System.Drawing.Point(12, 206)
         Me.ucrBase.Name = "ucrBase"
-        Me.ucrBase.Size = New System.Drawing.Size(411, 56)
-        Me.ucrBase.TabIndex = 0
+        Me.ucrBase.Size = New System.Drawing.Size(410, 52)
+        Me.ucrBase.TabIndex = 2
         '
         'dlgReorderSheet
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(419, 232)
+        Me.ClientSize = New System.Drawing.Size(419, 261)
         Me.Controls.Add(Me.lblSheetsToReoder)
         Me.Controls.Add(Me.ucrSheetsToReorder)
         Me.Controls.Add(Me.ucrBase)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "dlgReorderSheet"
-        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "Reorder Sheets"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Reoder Sheets"
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 

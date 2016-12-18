@@ -27,22 +27,23 @@ Partial Class dlgViewModels
         '
         'ucrBase
         '
-        Me.ucrBase.Location = New System.Drawing.Point(12, 225)
+        Me.ucrBase.Location = New System.Drawing.Point(0, 0)
         Me.ucrBase.Name = "ucrBase"
-        Me.ucrBase.Size = New System.Drawing.Size(410, 53)
+        Me.ucrBase.Size = New System.Drawing.Size(410, 52)
         Me.ucrBase.TabIndex = 0
         '
         'dlgViewModels
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(445, 290)
+        Me.ClientSize = New System.Drawing.Size(284, 262)
         Me.Controls.Add(Me.ucrBase)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
         Me.Name = "dlgViewModels"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Tag = "View"
-        Me.Text = "View"
         Me.ResumeLayout(False)
 
     End Sub

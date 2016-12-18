@@ -41,7 +41,9 @@ Public Class dlgBarAndPieChart
         ucrBarChartSelector.Reset()
         ucrBarChartSelector.Focus()
         ucrFactorReceiver.SetMeAsReceiver()
+        ucrSaveBar.Reset()
         sdgPlots.Reset()
+        chkFlipCoordinates.Checked = False
     End Sub
 
     Private Sub InitialiseDialog()
@@ -64,7 +66,8 @@ Public Class dlgBarAndPieChart
 
 
         ucrSaveBar.SetDataFrameSelector(ucrBarChartSelector.ucrAvailableDataFrames)
-        'ucrSaveBar.strPrefix = "Graph"
+        ucrBase.clsRsyntax.bExcludeAssignedFunctionOutput = False
+        ucrSaveBar.strPrefix = "Bar"
     End Sub
 
     Private Sub ReopenDialog()
@@ -131,6 +134,8 @@ Public Class dlgBarAndPieChart
             cmdPieChartOptions.Visible = False
             ucrSecondReceiver.Visible = True
             lblSecondFactor.Visible = True
+            chkFlipCoordinates.Visible = True
+            SetCoordFlip()
         ElseIf rdoPieChart.Checked = True Then
             ucrSaveBar.strPrefix = "Pie"
             clsRaesFunction.AddParameter("x", Chr(34) & Chr(34))
@@ -142,19 +147,22 @@ Public Class dlgBarAndPieChart
             cmdPieChartOptions.Visible = True
             ucrSecondReceiver.Visible = False
             lblSecondFactor.Visible = False
+            chkFlipCoordinates.Visible = False
+            ucrBase.clsRsyntax.RemoveOperatorParameter("coord_flip")
         End If
+        SetSecondFactorReceiverParameter() 'Warning: need to set second factor first, as in the pie chart case, it erases "fill" parameter (in clsRaesFunction), which is the parameter that takes the value in the first factor receiver.
         SetFactorReceiverParameter()
-        SetSecondFactorReceiverParameter()
         TestOKEnabled()
     End Sub
 
     Private Sub cmdOptions_Click(sender As Object, e As EventArgs) Handles cmdOptions.Click
         sdgPlots.SetDataFrame(strNewDataFrame:=ucrBarChartSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text)
         sdgPlots.ShowDialog()
+        'Warning, when coordinate flip is added to coordinates tab on sdgPLots, then link with chkFlipCoordinates...
     End Sub
 
     Private Sub cmdBarChartOptions_Click(sender As Object, e As EventArgs) Handles cmdBarChartOptions.Click
-        sdgLayerOptions.SetupLayer(clsTempGgPlot:=clsRggplotFunction, clsTempGeomFunc:=clsRgeom_barchart, clsTempAesFunc:=clsRaesFunction, bFixAes:=True, bFixGeom:=True, strDataframe:=ucrBarChartSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, bUseGlobalAes:=True)
+        sdgLayerOptions.SetupLayer(clsTempGgPlot:=clsRggplotFunction, clsTempGeomFunc:=clsRgeom_barchart, clsTempAesFunc:=clsRaesFunction, bFixAes:=True, bFixGeom:=True, strDataframe:=ucrBarChartSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, bApplyAesGlobally:=True, bIgnoreGlobalAes:=False)
         sdgLayerOptions.ShowDialog()
         For Each clsParam In clsRaesFunction.clsParameters
             If clsParam.strArgumentName = "x" Then
@@ -167,11 +175,11 @@ Public Class dlgBarAndPieChart
     End Sub
 
     Private Sub cmdPieChartOptions_Click(sender As Object, e As EventArgs) Handles cmdPieChartOptions.Click
-        sdgLayerOptions.SetupLayer(clsTempGgPlot:=clsRggplotFunction, clsTempGeomFunc:=clsRgeom_barchart, clsTempAesFunc:=clsRaesFunction, bFixAes:=True, bFixGeom:=True, strDataframe:=ucrBarChartSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, bUseGlobalAes:=True)
+        sdgLayerOptions.SetupLayer(clsTempGgPlot:=clsRggplotFunction, clsTempGeomFunc:=clsRgeom_barchart, clsTempAesFunc:=clsRaesFunction, bFixAes:=True, bFixGeom:=True, strDataframe:=ucrBarChartSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, bApplyAesGlobally:=True)
         sdgLayerOptions.ShowDialog()
         For Each clsParam In clsRaesFunction.clsParameters
             If clsParam.strArgumentName = "x" Then
-                If clsParam.strArgumentValue = "" Then
+                If clsParam.strArgumentValue = Chr(34) & Chr(34) Then
                     ucrFactorReceiver.Clear()
                 Else
                     ucrFactorReceiver.Add(clsParam.strArgumentValue)
@@ -186,11 +194,27 @@ Public Class dlgBarAndPieChart
     Private Sub ucrSaveBar_GraphNameChanged() Handles ucrSaveBar.GraphNameChanged, ucrSaveBar.SaveGraphCheckedChanged
         If ucrSaveBar.bSaveGraph Then
             ucrBase.clsRsyntax.SetAssignTo(ucrSaveBar.strGraphName, strTempDataframe:=ucrBarChartSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, strTempGraph:=ucrSaveBar.strGraphName)
-            ucrBase.clsRsyntax.bExcludeAssignedFunctionOutput = True
         Else
             ucrBase.clsRsyntax.SetAssignTo("last_graph", strTempDataframe:=ucrBarChartSelector.ucrAvailableDataFrames.cboAvailableDataFrames.Text, strTempGraph:="last_graph")
-            ucrBase.clsRsyntax.bExcludeAssignedFunctionOutput = False
         End If
         TestOKEnabled()
+    End Sub
+
+    Private Sub ucrSaveBar_ContentsChanged() Handles ucrSaveBar.ContentsChanged
+        TestOKEnabled()
+    End Sub
+
+    Public Sub SetCoordFlip()
+        Dim clsTempRFunc As New RFunction
+        If chkFlipCoordinates.Checked Then
+            clsTempRFunc.SetRCommand("coord_flip")
+            ucrBase.clsRsyntax.AddOperatorParameter("coord_flip", clsRFunc:=clsTempRFunc)
+        Else
+            ucrBase.clsRsyntax.RemoveOperatorParameter("coord_flip")
+        End If
+    End Sub
+
+    Private Sub chkFlipCoordinates_CheckedChanged(sender As Object, e As EventArgs) Handles chkFlipCoordinates.CheckedChanged
+        SetCoordFlip()
     End Sub
 End Class
