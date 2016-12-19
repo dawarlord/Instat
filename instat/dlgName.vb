@@ -16,11 +16,11 @@
 
 Imports instat.Translations
 Public Class dlgName
-    Dim bFirstLoad As Boolean = True
+    Dim bFirstLoad As Boolean = True ' Every dialog have this . The convention for boolean starts with small
     Dim bUseSelectedColumn As Boolean = False
     Dim strSelectedColumn As String = ""
     Dim strSelectedDataFrame As String = ""
-
+    'Handing the loading of the dialog that is when the dialog loads.
     Private Sub dlgName_Load(sender As Object, e As EventArgs) Handles Me.Load
         ucrBase.iHelpTopicID = 33
         autoTranslate(Me)
@@ -38,28 +38,26 @@ Public Class dlgName
     End Sub
 
     Private Sub ReopenDialog()
-        ucrReceiverName.txtReceiverSingle.Clear()
-        ucrInputNewName.txtInput.Clear()
     End Sub
 
-    Private Sub TestOKEnabled()
-        If ((Not ucrReceiverName.IsEmpty()) And (Not ucrInputNewName.IsEmpty())) Then
+    Private Sub TestOKEnabled() ' Check if the ok button should be enable or not 
+        If ((Not ucrReceiverName.IsEmpty()) AndAlso (Not ucrInputNewName.IsEmpty())) Then
             ucrBase.OKEnabled(True)
         Else
             ucrBase.OKEnabled(False)
         End If
     End Sub
-
+    'Basically help with the initiate setting of the dialogs. needs to be done only once.
     Private Sub InitialiseDialog()
-        ucrReceiverName.Selector = ucrSelectVariables
+        ucrReceiverName.Selector = ucrSelectVariables ' Link the receiver to the selector
         ucrReceiverName.SetMeAsReceiver()
         ucrBase.clsRsyntax.SetFunction(frmMain.clsRLink.strInstatDataObject & "$rename_column_in_data")
         ucrInputNewName.SetValidationTypeAsRVariable()
     End Sub
-
+    'Default setting of the dialog(Done on the first load)
     Public Sub SetDefaults()
         ucrSelectVariables.Reset()
-        ucrInputNewName.ResetText()
+        ucrInputNewName.ResetText() 
     End Sub
 
     Public Sub SetCurrentColumn(strColumn As String, strDataFrame As String)
@@ -89,7 +87,7 @@ Public Class dlgName
         TestOKEnabled()
     End Sub
 
-    Private Sub UcrInputNewName_NameChanged() Handles ucrInputNewName.NameChanged
+    Private Sub UcrInputNewName_NameChanged() Handles ucrInputNewName.NameChanged 
         If Not ucrInputNewName.IsEmpty Then
             ucrBase.clsRsyntax.AddParameter("new_val", Chr(34) & ucrInputNewName.GetText & Chr(34))
         Else
@@ -98,7 +96,7 @@ Public Class dlgName
         TestOKEnabled()
     End Sub
 
-    Private Sub ucrSelectVariables_DataFrameChanged() Handles ucrSelectVariables.DataFrameChanged
+    Private Sub ucrSelectVariables_DataFrameChanged() Handles ucrSelectVariables.DataFrameChanged ' Data frame change
         ucrInputNewName.ResetText()
         ucrBase.clsRsyntax.AddParameter("data_name", Chr(34) & ucrSelectVariables.ucrAvailableDataFrames.cboAvailableDataFrames.SelectedItem & Chr(34))
     End Sub

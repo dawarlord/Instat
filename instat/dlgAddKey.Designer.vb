@@ -23,13 +23,13 @@ Partial Class dlgAddKey
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.lblKeyName = New System.Windows.Forms.Label()
+        Me.cmdCheckUnique = New System.Windows.Forms.Button()
+        Me.lblKeyColumns = New System.Windows.Forms.Label()
+        Me.ucrInputCheckInput = New instat.ucrInputTextBox()
         Me.ucrInputKeyName = New instat.ucrInputTextBox()
         Me.ucrBase = New instat.ucrButtons()
         Me.ucrSelectorKeyColumns = New instat.ucrSelectorByDataFrameAddRemove()
         Me.ucrReceiverKeyColumns = New instat.ucrReceiverMultiple()
-        Me.cmdCheckUnique = New System.Windows.Forms.Button()
-        Me.ucrInputCheckInput = New instat.ucrInputTextBox()
-        Me.lblKeyColumns = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'lblKeyName
@@ -40,6 +40,32 @@ Partial Class dlgAddKey
         Me.lblKeyName.Size = New System.Drawing.Size(59, 13)
         Me.lblKeyName.TabIndex = 4
         Me.lblKeyName.Text = "Key Name:"
+        '
+        'cmdCheckUnique
+        '
+        Me.cmdCheckUnique.Location = New System.Drawing.Point(10, 249)
+        Me.cmdCheckUnique.Name = "cmdCheckUnique"
+        Me.cmdCheckUnique.Size = New System.Drawing.Size(98, 23)
+        Me.cmdCheckUnique.TabIndex = 5
+        Me.cmdCheckUnique.Text = "Check Unique"
+        Me.cmdCheckUnique.UseVisualStyleBackColor = True
+        '
+        'lblKeyColumns
+        '
+        Me.lblKeyColumns.AutoSize = True
+        Me.lblKeyColumns.Location = New System.Drawing.Point(270, 32)
+        Me.lblKeyColumns.Name = "lblKeyColumns"
+        Me.lblKeyColumns.Size = New System.Drawing.Size(71, 13)
+        Me.lblKeyColumns.TabIndex = 7
+        Me.lblKeyColumns.Text = "Key Columns:"
+        '
+        'ucrInputCheckInput
+        '
+        Me.ucrInputCheckInput.IsReadOnly = False
+        Me.ucrInputCheckInput.Location = New System.Drawing.Point(114, 250)
+        Me.ucrInputCheckInput.Name = "ucrInputCheckInput"
+        Me.ucrInputCheckInput.Size = New System.Drawing.Size(288, 21)
+        Me.ucrInputCheckInput.TabIndex = 6
         '
         'ucrInputKeyName
         '
@@ -74,32 +100,6 @@ Partial Class dlgAddKey
         Me.ucrReceiverKeyColumns.Selector = Nothing
         Me.ucrReceiverKeyColumns.Size = New System.Drawing.Size(132, 133)
         Me.ucrReceiverKeyColumns.TabIndex = 0
-        '
-        'cmdCheckUnique
-        '
-        Me.cmdCheckUnique.Location = New System.Drawing.Point(10, 249)
-        Me.cmdCheckUnique.Name = "cmdCheckUnique"
-        Me.cmdCheckUnique.Size = New System.Drawing.Size(98, 23)
-        Me.cmdCheckUnique.TabIndex = 5
-        Me.cmdCheckUnique.Text = "Check Unique"
-        Me.cmdCheckUnique.UseVisualStyleBackColor = True
-        '
-        'ucrInputCheckInput
-        '
-        Me.ucrInputCheckInput.IsReadOnly = False
-        Me.ucrInputCheckInput.Location = New System.Drawing.Point(114, 250)
-        Me.ucrInputCheckInput.Name = "ucrInputCheckInput"
-        Me.ucrInputCheckInput.Size = New System.Drawing.Size(288, 21)
-        Me.ucrInputCheckInput.TabIndex = 6
-        '
-        'lblKeyColumns
-        '
-        Me.lblKeyColumns.AutoSize = True
-        Me.lblKeyColumns.Location = New System.Drawing.Point(270, 32)
-        Me.lblKeyColumns.Name = "lblKeyColumns"
-        Me.lblKeyColumns.Size = New System.Drawing.Size(71, 13)
-        Me.lblKeyColumns.TabIndex = 7
-        Me.lblKeyColumns.Text = "Key Columns:"
         '
         'dlgAddKey
         '

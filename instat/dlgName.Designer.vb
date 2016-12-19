@@ -58,7 +58,7 @@ Partial Class dlgName
         'ucrSelectVariables
         '
         Me.ucrSelectVariables.bShowHiddenColumns = False
-        Me.ucrSelectVariables.bUseCurrentFilter = False
+        Me.ucrSelectVariables.bUseCurrentFilter = True
         Me.ucrSelectVariables.Location = New System.Drawing.Point(10, 10)
         Me.ucrSelectVariables.Margin = New System.Windows.Forms.Padding(0)
         Me.ucrSelectVariables.Name = "ucrSelectVariables"
